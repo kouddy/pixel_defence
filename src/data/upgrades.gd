@@ -40,6 +40,25 @@ const TIERS := {
 		{ &"cost": 220, &"damage": 1.8, &"range": 1.20, &"fire_rate": 1.25, &"splash": 1.40,
 		  &"note": "Archmage: massive blasts, fast casting." },
 	],
+	# --- Towers unlocked via story progression ---
+	&"crossbowman": [
+		{ &"cost": 70,  &"damage": 1.7, &"range": 1.15, &"fire_rate": 1.30, &"splash": 1.0,
+		  &"note": "Cranked draw: tighter groups, faster reload." },
+		{ &"cost": 140, &"damage": 1.8, &"range": 1.20, &"fire_rate": 1.45, &"splash": 1.0,
+		  &"note": "Marksman: a bolt for every throat." },
+	],
+	&"frost_mage": [
+		{ &"cost": 90,  &"damage": 1.6, &"range": 1.15, &"fire_rate": 1.20, &"splash": 1.25,
+		  &"note": "Deeper frost: wider chill, longer slow." },
+		{ &"cost": 180, &"damage": 1.7, &"range": 1.20, &"fire_rate": 1.30, &"splash": 1.35,
+		  &"note": "Blizzard: the field itself turns against them." },
+	],
+	&"catapult": [
+		{ &"cost": 120, &"damage": 1.7, &"range": 1.15, &"fire_rate": 1.20, &"splash": 1.25,
+		  &"note": "Heavier shot: bigger blasts, longer reach." },
+		{ &"cost": 240, &"damage": 1.9, &"range": 1.20, &"fire_rate": 1.30, &"splash": 1.40,
+		  &"note": "Siege master: the ground itself shatters." },
+	],
 }
 
 

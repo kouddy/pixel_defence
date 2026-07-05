@@ -4,6 +4,10 @@ extends Control
 ##
 ## Tower info panel: when a placed tower is selected, a panel opens on the left
 ## showing its name, rank, stats, and Upgrade/Sell buttons.
+##
+## Game-over overlay: covers the screen on victory/defeat with Play Again and
+## Level Select buttons so the player can immediately re-engage (the core
+## "one more run" loop) instead of being stuck on a dead board.
 
 signal build_selected(unit_data: UnitData)
 signal start_wave_requested
@@ -11,6 +15,8 @@ signal upgrade_requested
 signal sell_requested
 signal pause_requested
 signal speed_changed(multiplier: float)
+signal restart_requested
+signal quit_to_menu_requested
 
 const BTN_SIZE := Vector2(120, 70)
 const SPEED_OPTIONS := [1.0, 2.0]
@@ -36,6 +42,11 @@ const SPEED_OPTIONS := [1.0, 2.0]
 @onready var pause_overlay: ColorRect = %PauseOverlay
 @onready var pause_label: Label = %PauseLabel
 @onready var pause_hint: Label = %PauseHint
+@onready var gameover_overlay: ColorRect = %GameOverOverlay
+@onready var gameover_title: Label = %GameOverTitle
+@onready var gameover_detail: Label = %GameOverDetail
+@onready var gameover_restart_btn: Button = %GameOverRestartButton
+@onready var gameover_menu_btn: Button = %GameOverMenuButton
 
 # Speed-control index into SPEED_OPTIONS.
 var _speed_idx: int = 0
@@ -59,12 +70,26 @@ func _ready() -> void:
 	pause_btn.pressed.connect(func(): pause_requested.emit())
 	speed_btn.pressed.connect(_on_speed_btn)
 	pause_overlay.resume_requested.connect(func(): pause_requested.emit())
+	pause_overlay.quit_to_menu_requested.connect(func(): quit_to_menu_requested.emit())
+	var quit_btn: Button = %QuitButton
+	quit_btn.pressed.connect(func(): pause_overlay.quit_to_menu_requested.emit())
 	tp_upgrade_btn.pressed.connect(func(): upgrade_requested.emit())
 	tp_target_btn.pressed.connect(_on_target_btn)
 	tp_sell_btn.pressed.connect(_on_sell_btn)
+	gameover_restart_btn.pressed.connect(func(): restart_requested.emit())
+	gameover_menu_btn.pressed.connect(func(): quit_to_menu_requested.emit())
 	tower_panel.visible = false
 	pause_overlay.visible = false
 	wave_banner.visible = false
+	gameover_overlay.visible = false
+	# The game-over buttons must remain clickable even though the rest of the
+	# game is frozen (we don't pause the tree on game over, but the overlay
+	# should be self-sufficient regardless).
+	gameover_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	gameover_title.process_mode = Node.PROCESS_MODE_ALWAYS
+	gameover_detail.process_mode = Node.PROCESS_MODE_ALWAYS
+	gameover_restart_btn.process_mode = Node.PROCESS_MODE_ALWAYS
+	gameover_menu_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	_update_speed_btn()
 	# Overlay + labels must process while the tree is paused so the player can
 	# see the overlay and read it; the rest of the HUD freezes with the game.
@@ -75,8 +100,10 @@ func _ready() -> void:
 
 
 func _build_unit_buttons() -> void:
-	for def in Units.ALL:
-		var data := Units.make(def)
+	# The buildable arsenal is per-level (cumulative across the story arc);
+	# see GameManager.available_unit_ids(). Resolve each id to its UnitData.
+	for unit_id in GameManager.available_unit_ids():
+		var data := Units.by_id(unit_id)
 		var btn := Button.new()
 		btn.custom_minimum_size = BTN_SIZE
 		# Color-coded swatch + clean name/cost layout for instant readability.
@@ -233,13 +260,36 @@ func show_wave_bonus(_wave: int, amount: int) -> void:
 func _on_game_won() -> void:
 	wave_label.text = "VICTORY!"
 	tower_panel.visible = false
+	show_gameover(true)
 	SFX.victory()
 
 
 func _on_game_lost() -> void:
 	wave_label.text = "DEFEAT..."
 	tower_panel.visible = false
+	show_gameover(false)
 	SFX.defeat()
+
+
+# ============================ GAME OVER OVERLAY ============================
+
+## Show the end-of-run overlay. `victory` swaps the title/colour and the detail
+## line (waves cleared vs. wave reached on defeat).
+func show_gameover(victory: bool) -> void:
+	gameover_overlay.visible = true
+	if victory:
+		gameover_title.text = "⚔ VICTORY!"
+		gameover_title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.45))
+		gameover_detail.text = "You held the Crystal Kingdom.\nThe realm is safe... for now."
+	else:
+		gameover_title.text = "☠ DEFEAT"
+		gameover_title.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+		var reached: int = maxi(1, GameManager.current_wave)
+		gameover_detail.text = "You held out until Wave %d.\nThe crystal has fallen." % reached
+	# Fade the overlay in so the end of a run has a beat to land.
+	gameover_overlay.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(gameover_overlay, "modulate:a", 1.0, 0.35)
 
 
 # ============================ TOWER INFO PANEL ============================

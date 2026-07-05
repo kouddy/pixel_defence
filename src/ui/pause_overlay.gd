@@ -5,8 +5,11 @@ extends ColorRect
 ## player can ALWAYS resume, even though the rest of the scene tree is frozen
 ## (Main._unhandled_input and the build buttons don't fire while paused, which
 ## is why unpause has to live here on an always-processing node).
+##
+## Also offers a "Quit to Menu" button so the player can abandon a run mid-wave.
 
 signal resume_requested
+signal quit_to_menu_requested
 
 
 func _ready() -> void:
@@ -17,7 +20,7 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	# Click anywhere on the dim overlay to resume.
+	# Click anywhere on the dim overlay (but not on a button) to resume.
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		resume_requested.emit()
 

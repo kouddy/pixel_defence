@@ -5,12 +5,13 @@ config_version=5
 [application]
 config/name="Pixel Defence"
 config/description="A pixel-art medieval-fantasy tower defence."
-run/main_scene="res://src/main.tscn"
+run/main_scene="res://src/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 GameManager="*res://src/autoload/game_manager.gd"
+Save="*res://src/autoload/save.gd"
 FX="*res://src/autoload/fx.gd"
 SFX="*res://src/autoload/sfx.gd"
 

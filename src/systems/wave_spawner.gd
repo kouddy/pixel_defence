@@ -1,6 +1,8 @@
 extends Node
 ## WaveSpawner: spawns enemies in predefined waves. Each entry is a list of
 ## (enemy_id, count, interval) groups. Emits signals the main scene listens to.
+##
+## The wave script is supplied per-level via configure() (see Levels.gd).
 
 signal wave_started(index: int, total: int)
 signal wave_cleared(index: int)
@@ -10,76 +12,38 @@ signal all_waves_cleared
 @export var enemy_scene: PackedScene = preload("res://src/enemies/enemy.tscn")
 
 # Each wave is a list of spawn groups: { enemy, count, interval, gap_after }
-const WAVES := [
-	# Wave 1 — gentle intro: goblins
-	[{ &"enemy": &"goblin", &"count": 6, &"interval": 0.9, &"gap_after": 1.5 }],
-	# Wave 2 — goblins + a couple skeletons
-	[
-		{ &"enemy": &"goblin", &"count": 8, &"interval": 0.7, &"gap_after": 1.2 },
-		{ &"enemy": &"skeleton", &"count": 3, &"interval": 1.1, &"gap_after": 1.5 },
-	],
-	# Wave 3 — introduce wolves: fast ground rushers that punish slow defences
-	[
-		{ &"enemy": &"goblin", &"count": 6, &"interval": 0.6, &"gap_after": 0.8 },
-		{ &"enemy": &"wolf", &"count": 4, &"interval": 0.7, &"gap_after": 1.2 },
-		{ &"enemy": &"skeleton", &"count": 3, &"interval": 1.0, &"gap_after": 1.5 },
-	],
-	# Wave 4 — introduce flyers (bats): need archers/wizards
-	[
-		{ &"enemy": &"goblin", &"count": 8, &"interval": 0.6, &"gap_after": 1.0 },
-		{ &"enemy": &"bat", &"count": 6, &"interval": 0.7, &"gap_after": 1.5 },
-	],
-	# Wave 5 — mixed pressure: ghosts + a wolf pack
-	[
-		{ &"enemy": &"skeleton", &"count": 6, &"interval": 0.8, &"gap_after": 1.0 },
-		{ &"enemy": &"ghost", &"count": 5, &"interval": 0.9, &"gap_after": 1.0 },
-		{ &"enemy": &"wolf", &"count": 6, &"interval": 0.4, &"gap_after": 2.0 },
-	],
-	# Wave 6 — first troll: regenerating tank, must be focused down
-	[
-		{ &"enemy": &"bat", &"count": 8, &"interval": 0.5, &"gap_after": 1.0 },
-		{ &"enemy": &"troll", &"count": 1, &"interval": 1.0, &"gap_after": 1.0 },
-		{ &"enemy": &"goblin", &"count": 12, &"interval": 0.35, &"gap_after": 2.0 },
-	],
-	# Wave 7 — demons + wolves: armour and speed together
-	[
-		{ &"enemy": &"wolf", &"count": 8, &"interval": 0.4, &"gap_after": 1.0 },
-		{ &"enemy": &"demon", &"count": 3, &"interval": 1.3, &"gap_after": 1.5 },
-		{ &"enemy": &"skeleton", &"count": 10, &"interval": 0.4, &"gap_after": 2.0 },
-	],
-	# Wave 8 — twin trolls + flyers
-	[
-		{ &"enemy": &"ghost", &"count": 8, &"interval": 0.6, &"gap_after": 1.0 },
-		{ &"enemy": &"bat", &"count": 10, &"interval": 0.4, &"gap_after": 1.0 },
-		{ &"enemy": &"troll", &"count": 2, &"interval": 1.5, &"gap_after": 1.5 },
-		{ &"enemy": &"demon", &"count": 3, &"interval": 1.0, &"gap_after": 2.0 },
-	],
-	# Wave 9 — BOSS: Dragon + escort
-	[
-		{ &"enemy": &"ghost", &"count": 6, &"interval": 0.8, &"gap_after": 1.0 },
-		{ &"enemy": &"wolf", &"count": 8, &"interval": 0.35, &"gap_after": 1.2 },
-		{ &"enemy": &"demon", &"count": 3, &"interval": 1.2, &"gap_after": 1.5 },
-		{ &"enemy": &"troll", &"count": 1, &"interval": 1.0, &"gap_after": 1.5 },
-		{ &"enemy": &"dragon", &"count": 1, &"interval": 1.0, &"gap_after": 2.0 },
-	],
-]
-
+var _waves: Array = []
 var _wave_index: int = -1
 var _active_enemies: int = 0
 var _running: bool = false
 
 
+func _ready() -> void:
+	# Pull the wave script from the selected level. Done in _ready (not _init)
+	# so the autoload is guaranteed to be set before we read it.
+	configure(GameManager.selected_level)
+
+
+## Load the wave script for a level. Resets spawner state so a fresh run starts
+## cleanly (used by run-restart).
+func configure(level: Dictionary) -> void:
+	_waves = level.get(&"waves", [])
+	_wave_index = -1
+	_active_enemies = 0
+	_running = false
+
+
 func get_total_waves() -> int:
-	return WAVES.size()
+	return _waves.size()
 
 
 ## Sum each enemy type's count across all groups in a wave.
 ## `wave_index` is 0-based. Returns Dictionary[StringName, int].
 func get_wave_composition(wave_index: int) -> Dictionary:
 	var comp: Dictionary = {}
-	if wave_index < 0 or wave_index >= WAVES.size():
+	if wave_index < 0 or wave_index >= _waves.size():
 		return comp
-	for group in WAVES[wave_index]:
+	for group in _waves[wave_index]:
 		var id = group[&"enemy"]
 		comp[id] = comp.get(id, 0) + int(group[&"count"])
 	return comp
@@ -89,14 +53,14 @@ func start_next_wave() -> void:
 	if _running:
 		return
 	_wave_index += 1
-	if _wave_index >= WAVES.size():
+	if _wave_index >= _waves.size():
 		all_waves_cleared.emit()
 		return
 	_running = true
-	wave_started.emit(_wave_index + 1, WAVES.size())
-	GameManager.start_wave(_wave_index + 1, WAVES.size())
+	wave_started.emit(_wave_index + 1, _waves.size())
+	GameManager.start_wave(_wave_index + 1, _waves.size())
 	SFX.wave_start()
-	_run_wave(WAVES[_wave_index])
+	_run_wave(_waves[_wave_index])
 
 
 func _run_wave(groups: Array) -> void:

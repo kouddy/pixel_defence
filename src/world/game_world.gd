@@ -17,27 +17,21 @@ const BIOME_MOUNTAIN := &"mountain"
 const BIOME_PATH := &"path"
 const BIOME_CASTLE := &"castle"
 
-# Landscape (16:9) S-curve path: enemies flow LEFT -> RIGHT with vertical
-# switchbacks so towers get long edges to cover. Coordinates are tile (col,row);
-# top-left is (0,0). Spawn is off the left edge at col -2.
-const PATH_TILES := [
-	Vector2i(-2, 2),   # spawn (off the left edge)
-	Vector2i(6, 2),    # run right along row 2
-	Vector2i(6, 8),    # drop down to row 8
-	Vector2i(25, 8),   # long run right along row 8 (mid map)
-	Vector2i(25, 14),  # drop to row 14
-	Vector2i(13, 14),  # run LEFT back across (switchback)
-	Vector2i(13, 11),  # rise to row 11
-	Vector2i(28, 11),  # final long run right toward the goal
-	Vector2i(30, 11),  # exit into the castle gate
+# Default level (the classic Crystal Valley map). Overridden per-run via
+# configure() — see src/data/levels.gd for the catalogue of playable maps.
+# Coordinates are tile (col,row); top-left is (0,0). Spawn is off the left edge.
+var path_tiles: Array = [
+	Vector2i(-2, 2), Vector2i(6, 2), Vector2i(6, 8), Vector2i(25, 8),
+	Vector2i(25, 14), Vector2i(13, 14), Vector2i(13, 11), Vector2i(28, 11),
+	Vector2i(30, 11),
 ]
-
-# Castle footprint at the goal: a 2x2 block straddling the path exit on the
-# right edge, so the road runs into the castle gate (the visual objective).
-const CASTLE_TILES := [
+var castle_tiles: Array = [
 	Vector2i(30, 10), Vector2i(31, 10),
 	Vector2i(30, 11), Vector2i(31, 11),
 ]
+# Seed for the deterministic biome noise. Different per level so each map has
+# its own forest/water/mountain scatter.
+var map_seed: float = 1337.0
 
 var path_points: Array[Vector2] = []   # world-space waypoints
 var occupied: Dictionary = {}          # Vector2i -> bool (built-on tiles)
@@ -55,16 +49,32 @@ func _ready() -> void:
 	# fills the whole screen with origin at the top-left corner. The HUD floats
 	# on top as a transparent overlay.
 	map_origin = Vector2.ZERO
-	_rebuild_path()
-	_generate_biomes()
-	_draw_map()
+	apply_level(GameManager.selected_level)
 	if build_hint:
 		build_hint.visible = false
 
 
+## Configure the world for a level definition (path, castle, biome seed) and
+## rebuild the map. Called from _ready() and again on run-restart.
+func apply_level(level: Dictionary) -> void:
+	if level.is_empty():
+		return
+	if level.has(&"path_tiles"):
+		path_tiles = level[&"path_tiles"]
+	if level.has(&"castle_tiles"):
+		castle_tiles = level[&"castle_tiles"]
+	if level.has(&"map_seed"):
+		map_seed = level[&"map_seed"]
+	# Reset placement state so a fresh run starts with a clean map.
+	occupied.clear()
+	_rebuild_path()
+	_generate_biomes()
+	_draw_map()
+
+
 func _rebuild_path() -> void:
 	path_points.clear()
-	for t in PATH_TILES:
+	for t in path_tiles:
 		path_points.append(tile_to_world(t))
 
 
@@ -96,7 +106,7 @@ func _generate_biomes() -> void:
 			var t := Vector2i(x, y)
 			if is_path_tile(t):
 				_biome[t] = BIOME_PATH
-	for t in CASTLE_TILES:
+	for t in castle_tiles:
 		if _biome.has(t):
 			_biome[t] = BIOME_CASTLE
 	# Grass buffer: every tile adjacent (8-neighbourhood) to the path becomes
@@ -150,17 +160,18 @@ func _ensure_grass_pockets() -> void:
 ## the map) so regions blob together into coherent features rather than static.
 func _smooth_noise(x: float, y: float) -> float:
 	const FREQ := 0.16
-	const SEED := 1337.0
 	var gx := x * FREQ
 	var gy := y * FREQ
 	var x0 := floori(gx)
 	var y0 := floori(gy)
 	var fx := smoothstep(0.0, 1.0, gx - x0)
 	var fy := smoothstep(0.0, 1.0, gy - y0)
-	var v00 := _hash01(x0, y0, SEED)
-	var v10 := _hash01(x0 + 1, y0, SEED)
-	var v01 := _hash01(x0, y0 + 1, SEED)
-	var v11 := _hash01(x0 + 1, y0 + 1, SEED)
+	# Per-level seed so each map's forest/water scatter differs.
+	var s := map_seed
+	var v00 := _hash01(x0, y0, s)
+	var v10 := _hash01(x0 + 1, y0, s)
+	var v01 := _hash01(x0, y0 + 1, s)
+	var v11 := _hash01(x0 + 1, y0 + 1, s)
 	var a := lerpf(v00, v10, fx)
 	var b := lerpf(v01, v11, fx)
 	return lerpf(a, b, fy)
@@ -196,9 +207,9 @@ func world_to_tile(p: Vector2) -> Vector2i:
 func is_path_tile(t: Vector2i) -> bool:
 	# A tile is "on the path" if it lies between two consecutive path waypoints
 	# along either a horizontal or vertical segment.
-	for i in range(PATH_TILES.size() - 1):
-		var a: Vector2i = PATH_TILES[i]
-		var b: Vector2i = PATH_TILES[i + 1]
+	for i in range(path_tiles.size() - 1):
+		var a: Vector2i = path_tiles[i]
+		var b: Vector2i = path_tiles[i + 1]
 		var min_x := mini(a.x, b.x)
 		var max_x := maxi(a.x, b.x)
 		var min_y := mini(a.y, b.y)

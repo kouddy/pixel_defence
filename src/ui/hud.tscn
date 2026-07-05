@@ -255,3 +255,66 @@ horizontal_alignment = 1
 vertical_alignment = 1
 theme_override_colors/font_color = Color(0.8, 0.82, 0.9, 0.9)
 theme_override_font_sizes/font_size = 18
+
+[node name="QuitButton" type="Button" parent="PauseOverlay"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = -90.0
+offset_right = 110.0
+offset_bottom = -30.0
+text = "☰ Quit to Menu"
+process_mode = 3
+
+[node name="GameOverOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.03, 0.03, 0.06, 0.7)
+mouse_filter = 0
+
+[node name="Center" type="CenterContainer" parent="GameOverOverlay"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Col" type="VBoxContainer" parent="GameOverOverlay/Center"]
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="GameOverTitle" type="Label" parent="GameOverOverlay/Center/Col"]
+unique_name_in_owner = true
+text = "VICTORY!"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.92, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.04, 0.04, 0.9)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 52
+
+[node name="GameOverDetail" type="Label" parent="GameOverOverlay/Center/Col"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.04, 0.04, 0.85)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="GameOverOverlay/Center/Col"]
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="GameOverRestartButton" type="Button" parent="GameOverOverlay/Center/Col/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 60)
+text = "↻ Play Again"
+
+[node name="GameOverMenuButton" type="Button" parent="GameOverOverlay/Center/Col/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 60)
+text = "☰ Level Select"

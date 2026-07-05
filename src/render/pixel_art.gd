@@ -387,25 +387,193 @@ const CASTLE := [
 ]
 
 
+# ============================ TOWERS (story unlocks) ============================
+
+const CROSSBOWMAN := [
+	"................",
+	"......y.........",   # hood quill
+	".....yy.........",
+	"....yYYy........",   # gold-trim hood
+	"...yYYoYy....M..",   # face + bow stock
+	"..yYYoooYy..Mm..",
+	"..yYoooooy..Mm..",   # eyes + cocked bow
+	"...yYooooy..Mm..",
+	"....yAAAy...m...",   # shoulders + crossbow body
+	"...AAyyyAA..m...",   # quarrels
+	"...AyyyyyA..mZ..",   # bolt tip (Z)
+	"....KyyyK...m...",
+	"....Kmm.mK......",   # legs
+	"...KKm...mK.....",
+	"..KKKK...KKKK...",
+	"................",
+]
+
+const FROST_MAGE := [
+	"................",
+	"......b.........",   # frost crystal tip
+	".....bb.........",
+	"....cbc.........",   # cyan-blue hood crown
+	"...ccbc.........",
+	"..ccccc.........",   # swept hood
+	".cccccCC........",   # brim
+	".cnnnnnc....b...",   # hair + ice staff orb
+	".cnSSSnc....c...",   # face + staff
+	".cnwwwnc....c...",   # frost beard
+	".cnwwwnc....c...",
+	"..cnnnnc....m...",   # robe + staff base
+	"..ccmmcc....m...",
+	"...KmmmK........",
+	"...Km..mK.......",
+	"...K....K.......",
+]
+
+const CATAPULT := [
+	"................",
+	"................",
+	"...M............",   # throwing arm tip
+	"..MM.....ZZ.....",   # arm + boulder (Z)
+	".MMM....ZyZ.....",
+	".MMmm..ZyyZ.....",   # arm joint + payload
+	".MmmmmZZyyZ.....",
+	"..mmMMMyyyZ.....",   # frame
+	"...MMMMMMM......",
+	"..MmmmmmM.......",   # bucket
+	"..KKKKKKKK......",   # wheels
+	".KK....KK.......",
+	".KK....KK.......",
+	"KKKK..KKKK......",
+	"................",
+	"................",
+]
+
+# ============================ ENEMIES (story unlocks) ============================
+
+const CURSED_SKULL := [
+	"................",
+	"...PPPPPPPP.....",   # purple cursed crown
+	"..PnnnnnnnnP....",
+	".PnnKKnnKKnnP...",   # brow
+	".PnddnnnnddnP...",   # eye sockets (glowing d)
+	".PnKKnnnnKKnP...",
+	".PnnnKKKKnnnP...",
+	"..PnnKKKKnnnP...",   # teeth
+	"...PnnnnnnP.....",
+	"....PnnnnP......",
+	"...PnWnWnP......",   # ribcage
+	"...nnnnnn.......",
+	"....KK.KK.......",
+	"...nnn.nnn......",
+	"..KKKK.KKKK.....",
+	"................",
+]
+
+const WRAITH := [
+	"................",
+	"....PPPP........",   # hood crown
+	"...PuuuuP.......",
+	"..PuuuuuuP......",
+	".PuKKuuKKuP.....",   # glowing eyes
+	".PuuuuuuuuP.....",
+	".PuCCuuCCuuP....",   # spectral face
+	".PuuuuuuuuP.....",
+	"..PuuuuuuP......",   # tattered cloak
+	"..Pu.uu.uP......",
+	"..Pu..u..uP.....",
+	"..Pu......uP....",
+	"..P........P....",
+	".PP........PP...",
+	"................",
+	"................",
+]
+
+const HELLHOUND := [
+	"................",
+	".R..........R...",   # flame ears
+	"rRR........RRr..",
+	"rRRo......oRRr..",
+	"rrRRrrrrrrRRrr..",   # head
+	".rRKKrrrrKKRr...",   # brow
+	".rRForrFoRrr....",   # fire eyes (F)
+	".rrrommrrrr.....",   # snout
+	".rrrKKmmKKrrr...",   # fangs
+	"..rrrrrrrrrr....",
+	"..RoRRRRRRoR....",   # flame mane down back
+	".RoRRRRRRRRoR...",
+	".Ro.rrrrrr.oR...",   # legs
+	".KK.rr..rr.KK...",
+	"KKKK....KKKK....",
+	"................",
+]
+
+const BANSHEE := [
+	"................",
+	"....LLLL........",   # spectral crown
+	"...LuuuuL.......",
+	"..LuuuuuuL......",
+	".LuKKuuKKuL.....",   # hollow glowing eyes
+	".LuuuuuuuuL.....",
+	".LuCCuuCCuuL....",   # screaming mouth
+	".LuuuuuuuuL.....",
+	".LuKKuuKKuuL....",
+	".LuuuuuuuuL.....",
+	"..LuuuuuuL......",
+	"..Lu.uu.uL......",   # tattered wavy bottom
+	"..Lu..u..uL.....",
+	".Lu...u...uL....",
+	".L.....L...L....",
+	"................",
+]
+
+const HYDRA := [
+	"................",
+	".PP...PP...PP...",   # three horned heads
+	"PPPP.PPPP.PPPP..",
+	"PPuP.PPuP.PPuP..",
+	"PPuP.PPuP.PPuP..",   # each head's eyes
+	".PP..PPP..PP....",   # jaw line
+	"..uPPuPPPuPPu...",   # fangs
+	".PPPPPPPPPPPPP..",   # body confluence
+	"PPuPPPuPPPuPPuPP",
+	"PPPPPPPPPPPPPPPP",
+	".PPPPPPPPPPPPP..",   # wings spread
+	"uuPPPPPPPPPPuu..",
+	".uuPPPPPPPPuu...",
+	"..KPPPPPPPPK....",   # tail/legs
+	"..KPP....PPK....",
+	".KKKK....KKKK...",
+]
+
+
+# ============================ DISPATCH ============================
+
+
 static func for_unit(unit_id: String) -> PackedStringArray:
 	match unit_id:
-		&"soldier": return SOLDIER
-		&"archer":  return ARCHER
-		&"knight":  return KNIGHT
-		&"wizard":  return WIZARD
+		&"soldier":     return SOLDIER
+		&"archer":      return ARCHER
+		&"knight":      return KNIGHT
+		&"wizard":      return WIZARD
+		&"crossbowman": return CROSSBOWMAN
+		&"frost_mage":  return FROST_MAGE
+		&"catapult":    return CATAPULT
 	return SOLDIER
 
 
 static func for_enemy(enemy_id: String) -> PackedStringArray:
 	match enemy_id:
-		&"goblin":   return GOBLIN
-		&"skeleton": return SKELETON
-		&"ghost":    return GHOST
-		&"bat":      return BAT
-		&"wolf":     return WOLF
-		&"demon":    return DEMON
-		&"troll":    return TROLL
-		&"dragon":   return DRAGON
+		&"goblin":       return GOBLIN
+		&"skeleton":     return SKELETON
+		&"ghost":        return GHOST
+		&"bat":          return BAT
+		&"wolf":         return WOLF
+		&"demon":        return DEMON
+		&"troll":        return TROLL
+		&"dragon":       return DRAGON
+		&"cursed_skull": return CURSED_SKULL
+		&"wraith":       return WRAITH
+		&"hellhound":    return HELLHOUND
+		&"banshee":      return BANSHEE
+		&"hydra":        return HYDRA
 	return GOBLIN
 
 

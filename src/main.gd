@@ -27,6 +27,8 @@ func _ready() -> void:
 	hud.upgrade_requested.connect(_on_upgrade_requested)
 	hud.sell_requested.connect(_on_sell_requested)
 	hud.speed_changed.connect(_on_speed_changed)
+	hud.restart_requested.connect(_on_restart_requested)
+	hud.quit_to_menu_requested.connect(_on_quit_to_menu)
 	spawner.world_path = world.get_path()
 	spawner.all_waves_cleared.connect(_on_all_waves_cleared)
 	spawner.wave_started.connect(_on_wave_started)
@@ -227,6 +229,17 @@ func _on_wave_cleared(index: int) -> void:
 
 func _on_all_waves_cleared() -> void:
 	GameManager.win()
+
+
+# ============================ RUN RESTART / QUIT ============================
+
+func _on_restart_requested() -> void:
+	# Reload the gameplay scene with a fresh state for the current level.
+	GameManager.restart_run()
+
+
+func _on_quit_to_menu() -> void:
+	GameManager.goto_menu()
 
 
 # ============================ PAUSE ============================

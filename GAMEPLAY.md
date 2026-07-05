@@ -4,16 +4,42 @@ How the game actually plays: the loop, units, enemies, economy, and win/lose con
 For the high-level vision, theme, and "why it's fun", see **[DESIGN.md](DESIGN.md)**.
 
 > This document mirrors the live code. Stats below are the exact values in
-> `src/data/units.gd`, `enemies.gd`, `upgrades.gd`, `game_manager.gd`, and
-> `wave_spawner.gd`. Update code first, then this doc.
+> `src/data/units.gd`, `enemies.gd`, `upgrades.gd`, `game_manager.gd`,
+> `levels.gd`, and `wave_spawner.gd`. Update code first, then this doc.
 
 ---
 
 ## Core Loop
 ```
-Plan (place/upgrade units) → Survive Wave → Earn Gold + XP → Rebuild → Repeat
+Pick Level → Plan (place/upgrade units) → Survive Wave → Earn Gold → Rebuild → Repeat → Win → unlock next level (saved)
 ```
-Each "day" = a wave. Survive all waves of a map to win.
+Each "day" = a wave. Survive all waves of a map to win and unlock the next.
+
+---
+
+## Story Progression
+
+Levels are gated in story order. You start with only **Crystal Valley** unlocked.
+Beating a level permanently unlocks the next (saved to disk at
+`user://progress.cfg` — your progress survives quitting). The menu's **↺ Reset
+Progress** button wipes the save so you can replay from level 1.
+
+The story arc is also an **escalating arsenal**: towers unlocked on a level stay
+buildable on every later level (cumulative, classic TD). Enemies are simply
+whatever a level's wave script references — new foes debut as the story moves on.
+
+| # | Level | Path | Start gold | Lives | Unlocks tower | New enemy |
+|---|-------|------|-----------|-------|---------------|-----------|
+| 1 | **Crystal Valley** | Gentle S-curve | 200 | 20 | Soldier, Archer, Knight, Wizard *(base 4)* | — |
+| 2 | **Shadowfen** | Tighter zigzag | 190 | 18 | Crossbowman | Cursed Skull |
+| 3 | **Dragon's Reach** | Long serpentine | 280 | 18 | Frost Mage | Wraith |
+| 4 | **Plaguelands** | Twin parallel runs | 280 | 18 | Catapult | Hellhound |
+| 5 | **Sunken Crypt** | Maze of causeways | 300 | 16 | — *(full arsenal)* | Banshee |
+| 6 | **Throne of Ash** | Long sweeping approach | 320 | 18 | — *(finale)* | Hydra *(boss)* |
+
+The wave table below describes **Crystal Valley** (the canonical opening map).
+Other levels use the same enemy roster in different compositions/order — see
+`levels.gd` for their exact scripts.
 
 ---
 
@@ -35,22 +61,30 @@ Each "day" = a wave. Survive all waves of a map to win.
 
 ## Defenders (Towers)
 
-The player places these on buildable (grass) tiles along the path.
+The player places these on buildable (grass) tiles along the path. The base
+four are available from level 1; the rest unlock as the story progresses (see
+the table above) and stay buildable on every later level.
 
-| Unit       | Role              | Strength                    | Weakness              |
-|------------|-------------------|-----------------------------|-----------------------|
-| Soldier ⚔️ | Cheap melee block | Holds chokepoints, soaks    | Low range, ground only|
-| Archer 🏹  | Ranged single DPS | Hits flyers, long range     | Fragile, low HP       |
-| Knight 🛡️ | Tanky frontline   | High HP, slows enemies on hit | Slow attack, costly |
-| Wizard 🔮  | AoE magic         | Splash, hits air            | Long cooldown, costly |
+| Unit            | Role              | Strength                    | Weakness              |
+|-----------------|-------------------|-----------------------------|-----------------------|
+| Soldier ⚔️      | Cheap melee block | Holds chokepoints, soaks    | Low range, ground only|
+| Archer 🏹       | Ranged single DPS | Hits flyers, long range     | Fragile, low HP       |
+| Knight 🛡️      | Tanky frontline   | High HP, slows enemies on hit | Slow attack, costly |
+| Wizard 🔮       | AoE magic         | Splash, hits air            | Long cooldown, costly |
+| Crossbowman 🏹  | Burst single DPS  | Very fast fire rate         | Shorter range than Archer |
+| Frost Mage ❄️   | AoE + slow        | Splash that slows everyone hit | Lower damage than Wizard |
+| Catapult 💥     | Long-range siege  | Huge splash, very long range | Very slow reload, can't hit air |
 
 ### Stats (exact live values)
-| Unit    | Cost | Damage | Range | Fire rate | Special |
-|---------|------|--------|-------|-----------|---------|
-| Soldier | 50   | 8      | 77    | 1.5/s     | Ground only |
-| Archer  | 80   | 12     | 160   | 1.2/s     | Hits air |
-| Knight  | 110  | 18     | 83    | 1.0/s     | Slows on hit (0.5× for 1.2s) |
-| Wizard  | 150  | 22     | 128   | 0.7/s     | Splash radius 48, hits air |
+| Unit        | Cost | Damage | Range | Fire rate | Special |
+|-------------|------|--------|-------|-----------|---------|
+| Soldier     | 50   | 8      | 77    | 1.5/s     | Ground only |
+| Archer      | 80   | 12     | 160   | 1.2/s     | Hits air |
+| Knight      | 110  | 18     | 83    | 1.0/s     | Slows on hit (0.5× for 1.2s) |
+| Wizard      | 150  | 22     | 128   | 0.7/s     | Splash radius 48, hits air |
+| Crossbowman | 95   | 10     | 140   | 2.0/s     | Hits air |
+| Frost Mage  | 140  | 12     | 120   | 0.9/s     | Splash 52, slows (0.55× for 1.5s), hits air |
+| Catapult    | 200  | 40     | 200   | 0.35/s    | Splash 70, ground only |
 
 > Ranges were scaled to the narrower 16:9 grid so each tower covers the same
 > *relative* fraction of the playfield it did on the old wide map.
@@ -61,18 +95,21 @@ placed tower (left-click it) to open its info panel on the left, showing current
 stats, the next tier's effect, and **Target / Upgrade / Sell** buttons.
 
 - **Upgrade** multiplies the tower's BASE stats (damage / range / fire rate, and
-  splash radius for the Wizard). Multipliers stack cumulatively from base, so
+  splash radius for splash towers). Multipliers stack cumulatively from base, so
   there's no drift on repeat application. Costs scale per tier.
 - **Sell** refunds **70%** of all gold invested (base cost + upgrades) and frees
   the tile for rebuilding. **Two-click confirm:** the first click arms a 3-second
   window (button reads "CONFIRM sell?"), the second click completes the sale.
 
-| Unit    | Tier 1 cost | Tier 1 effect                | Tier 2 cost | Tier 2 effect                   |
-|---------|-------------|------------------------------|-------------|---------------------------------|
-| Soldier | 40          | +DMG, +range, faster swings  | 80          | Veteran: heavy strikes, pace    |
-| Archer  | 60          | Eagle eye: +range, +DMG      | 120         | Marksman: rapid fire            |
-| Knight  | 80          | Plate armour, heavier blows  | 160         | Champion: deep slow, +DMG       |
-| Wizard  | 110         | Wider/hotter explosions      | 220         | Archmage: massive blasts, fast  |
+| Unit        | Tier 1 cost | Tier 1 effect                | Tier 2 cost | Tier 2 effect                   |
+|-------------|-------------|------------------------------|-------------|---------------------------------|
+| Soldier     | 40          | +DMG, +range, faster swings  | 80          | Veteran: heavy strikes, pace    |
+| Archer      | 60          | Eagle eye: +range, +DMG      | 120         | Marksman: rapid fire            |
+| Knight      | 80          | Plate armour, heavier blows  | 160         | Champion: deep slow, +DMG       |
+| Wizard      | 110         | Wider/hotter explosions      | 220         | Archmage: massive blasts, fast  |
+| Crossbowman | 70          | Cranked draw: faster reload  | 140         | Marksman: a bolt for every throat |
+| Frost Mage  | 90          | Deeper frost: wider chill    | 180         | Blizzard: the field turns on them |
+| Catapult    | 120         | Heavier shot: bigger blasts  | 240         | Siege master: the ground shatters |
 
 (Tier multipliers: damage ~1.7–1.9, range ~1.15–1.25, fire_rate ~1.15–1.40,
 Wizard splash ~1.35–1.40. Upgrades are tuned so investing in position beats
@@ -96,21 +133,29 @@ Towers still respect range and can't-hit-air rules regardless of mode.
 
 ## Enemies
 
-| Enemy        | HP   | Speed | Armor | Reward | Special |
-|--------------|------|-------|-------|--------|---------|
-| Goblin 👺    | 30   | 80    | 0     | 6      | Fast, swarms |
-| Skeleton 💀 | 55   | 55    | 2     | 9      | Armored |
-| Ghost 👻     | 45   | 70    | 0     | 10     | — |
-| Bat 🦇       | 28   | 95    | 0     | 8      | **Flying** |
-| Wolf 🐺      | 42   | 130   | 0     | 9      | **Very fast** ground rusher |
-| Demon 😈     | 130  | 45    | 4     | 20     | Tanky + armored |
-| Troll 👹     | 240  | 38    | 3     | 32     | **Regenerates** 8 HP/s — must be focused |
-| Dragon 🐉    | 600  | 40    | 0     | 100    | **Boss**, flying, leaks 5 lives |
+The base roster debuts in levels 1–3; new foes appear as the story continues.
+
+| Enemy           | HP   | Speed | Armor | Reward | Special |
+|-----------------|------|-------|-------|--------|---------|
+| Goblin 👺       | 30   | 80    | 0     | 6      | Fast, swarms |
+| Skeleton 💀    | 55   | 55    | 2     | 9      | Armored |
+| Ghost 👻        | 45   | 70    | 0     | 10     | — |
+| Bat 🦇          | 28   | 95    | 0     | 8      | **Flying** |
+| Wolf 🐺         | 42   | 130   | 0     | 9      | **Very fast** ground rusher |
+| Demon 😈        | 130  | 45    | 4     | 20     | Tanky + armored |
+| Troll 👹        | 240  | 38    | 3     | 32     | **Regenerates** 8 HP/s — must be focused |
+| Dragon 🐉       | 600  | 40    | 0     | 100    | **Boss**, flying, leaks 5 lives |
+| Cursed Skull 💀 | 70   | 50    | 3     | 12     | Heavier-armored skeleton *(level 2)* |
+| Wraith 👁️      | 35   | 105   | 0     | 11     | **Flying**, very fast *(level 3)* |
+| Hellhound 🔥    | 60   | 140   | 2     | 14     | **Very fast** + armored *(level 4)* |
+| Banshee 😱      | 90   | 60    | 0     | 16     | HP sponge, no special trick *(level 5)* |
+| Hydra 🐉        | 900  | 35    | 0     | 150    | **Final boss**, flying, leaks 6 lives *(level 6)* |
 
 - **Armor** reduces each instance of incoming damage by a flat amount (min 0).
-- **Flying** enemies bypass ground-only towers (Soldier, Knight).
+- **Flying** enemies bypass ground-only towers (Soldier, Knight, Catapult).
 - **Regeneration**: Trolls heal over time, undoing chip damage — burst them down.
-- **Leak damage**: most enemies cost 1 life if they reach the exit; the Dragon costs 5.
+- **Leak damage**: most enemies cost 1 life if they reach the exit; the Dragon
+  costs 5, the Hydra costs 6.
 
 ---
 
@@ -147,7 +192,8 @@ a flyer wave).
 - **Sell refund**: 70% of all gold invested in a tower (base + upgrades), with a
   two-click confirm to prevent accidental sells.
 
-Starting gold: **200**. Starting lives: **20**.
+Starting gold and lives are **per-level** (see the Levels table above); Crystal
+Valley starts with 200 gold and 20 lives.
 
 ---
 
@@ -160,6 +206,7 @@ Starting gold: **200**. Starting lives: **20**.
 
 ## Controls
 
+- **Main menu**: click a level card to start a run on that map.
 - **Click a unit button** in the bottom bar → enter build mode (green/red tile
   follows cursor).
 - **Click a green tile** → place the unit (costs gold).
@@ -167,10 +214,13 @@ Starting gold: **200**. Starting lives: **20**.
 - **Right-click** → cancel build mode, or deselect the current tower.
 - **Enter / ⏎** → start the next wave (build phase only).
 - **Space / P** → pause (only during an active wave). The screen dims and shows a
-  "PAUSED" overlay; press again to resume. Build/planning time between waves
-  needs no pause.
+  "PAUSED" overlay with a **Quit to Menu** button; press again to resume.
+  Build/planning time between waves needs no pause.
 - **M** → toggle sound.
 - **▶ 1x / 2x** button (bottom bar) → toggle simulation speed.
+- **Game over**: on victory or defeat, an overlay offers **↻ Play Again**
+  (restarts the same level) and **☰ Level Select** (returns to the main menu).
 
 > The Pause and Speed buttons remain interactive while paused; Speed is applied
-> via `Engine.time_scale` and is reset to 1× when the game exits.
+> via `Engine.time_scale` and is reset to 1× when the game exits or returns to
+> the menu.

@@ -38,23 +38,30 @@ These are the proven psychological hooks of the genre — we design *for* them:
 
 ## 3. MVP Scope (v1)
 
-1. **Prototype (done):** 1 map, fixed path, 4 base units, 6 enemy types, gold economy, 6 waves, win/lose.
-2. **Polish (next):** juice (particles, shake, SFX), upgrade branches, pixel-art sprites.
-3. **Depth (later):** enemy affixes, meta-upgrades, multiple maps, daily challenge, day/night cycle.
+1. **Prototype (done):** core loop, base units, enemy roster, gold economy, win/lose.
+2. **Polish (done):** juice (particles, shake, SFX), single-line upgrades, pixel-art sprites, pause/speed.
+3. **Structure (done):** main menu + level select, run-restart flow, save/load.
+4. **Story arc (done):** 6 maps with cumulative tower unlocks + per-level new enemies + 2 bosses.
+5. **Depth (next):** branching upgrade trees, enemy affixes, meta-progression, daily challenge, day/night cycle.
 
 ---
 
 ## 4. Roadmap
 
 - [x] Core loop: build, wave, gold, lives, win/lose
-- [x] 4 units + 6 enemies incl. flyers, armor, boss
-- [x] HUD: gold/wave/lives + build bar
-- [ ] Unit upgrade trees (Pikeman/Berserker, Crossbow/Ranger, Paladin/Guardian, Pyromancer/Cryomancer)
-- [ ] Pixel-art sprites + animations
-- [ ] Juice: particles, screen shake, SFX, damage numbers
+- [x] 7 units + 13 enemies incl. flyers, armor, regen, fast rushers, 2 bosses
+- [x] HUD: gold/wave/lives + build bar + tower panel
+- [x] Single-line tower upgrades (2 tiers) + targeting AI (First/Last/Strongest) + sell
+- [x] Pixel-art sprites + map props
+- [x] Juice: particles, screen shake, hitstop, SFX, damage numbers
+- [x] Main menu + level select + run-restart flow
+- [x] **Story progression: 6 levels, beat-one-to-unlock-next, saved to disk**
+- [x] **Cumulative tower arsenal across the story arc (per-level unlocks)**
+- [x] **Per-level new enemies + 2 bosses (Dragon, Hydra)**
+- [ ] Branching upgrade trees (Pikeman/Berserker, Crossbow/Ranger, Paladin/Guardian, Pyromancer/Cryomancer)
 - [ ] Enemy affixes
 - [ ] Meta-progression (Crystal Shards between runs)
-- [ ] Multiple maps & daily challenge
+- [ ] Daily challenge & bonus maps
 - [ ] Day/night cycle
 
 ---
