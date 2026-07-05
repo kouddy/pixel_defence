@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbrstshrd0001"]
+
+[ext_resource type="Script" path="res://src/fx/burst_shard.gd" id="1_shard"]
+
+[node name="BurstShard" type="ColorRect"]
+offset_right = 6.0
+offset_bottom = 6.0
+script = ExtResource("1_shard")
