@@ -79,6 +79,52 @@ const DIR_RIGHT := &"right"
 const STANCE_IDLE    := false
 const STANCE_ATTACK  := true
 
+# ============================ SOLDIER SVG ART ============================
+# The soldier ships as detailed vector art (assets/soldier_*.svg) imported as
+# textures. The side-facing SVGs look to the LEFT, so the RIGHT pose is the LEFT
+# sprite drawn mirrored (flip_h). Map each (facing, stance) to a texture + the
+# horizontal-flip flag the caller should apply.
+#
+# Paths use load() (cached by Godot). The project imports SVGs at scale 1.0 and
+# nearest-neighbour by default; for this art we override the texture to LINEAR
+# filtering at load time so the detailed shading downscales cleanly.
+const SOLDIER_TEX_FRONT_IDLE    := preload("res://assets/soldier_front_non_attack.svg")
+const SOLDIER_TEX_FRONT_ATTACK  := preload("res://assets/soldier_front_attack.svg")
+const SOLDIER_TEX_BACK_IDLE     := preload("res://assets/soldier_back_non_attack.svg")
+const SOLDIER_TEX_BACK_ATTACK   := preload("res://assets/soldier_back_attack.svg")
+const SOLDIER_TEX_SIDE_IDLE     := preload("res://assets/soldier_left_non_attack.svg")
+const SOLDIER_TEX_SIDE_ATTACK   := preload("res://assets/soldier_left_attack.svg")
+
+# Side art faces LEFT, so the RIGHT facing needs a horizontal flip.
+#   facing LEFT  -> flip_h = false (art already faces left)
+#   facing RIGHT -> flip_h = true  (mirror the left-facing art)
+const SIDE_FLIP_FOR_LEFT := false
+const SIDE_FLIP_FOR_RIGHT := true
+
+## On-screen edge length for the soldier art, in pixels. Sized to match the
+## footprint of the old 16-row ASCII grid at pixel_size 2.0 (≈32px tall) so the
+## new art drops into the existing tile scale without re-tuning placement.
+const SOLDIER_DRAW_SIZE := 36.0
+
+
+## Returns the soldier texture for a (facing, stance) pair.
+static func _soldier_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return SOLDIER_TEX_FRONT_ATTACK if attacking else SOLDIER_TEX_FRONT_IDLE
+		DIR_BACK:
+			return SOLDIER_TEX_BACK_ATTACK if attacking else SOLDIER_TEX_BACK_IDLE
+		# SIDE covers LEFT and RIGHT; mirroring is the caller's job.
+		DIR_LEFT, DIR_RIGHT:
+			return SOLDIER_TEX_SIDE_ATTACK if attacking else SOLDIER_TEX_SIDE_IDLE
+	return SOLDIER_TEX_FRONT_IDLE
+
+
+## Whether a given unit should render via SVG textures (texture mode) rather
+## than the ASCII grid. Today only the soldier has vector art.
+static func has_texture_art(unit_id: String) -> bool:
+	return unit_id == &"soldier"
+
 # ============================ DEFENDERS ============================
 
 # Soldier — canonical single orientation (kept for shop previews / fallback).
@@ -721,6 +767,27 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 	# Graceful fallback: units without directional art render their single grid
 	# in every facing/stance so nothing breaks.
 	return for_unit(unit_id)
+
+
+## Directional + stance TEXTURE for a texture-art unit (currently the soldier).
+## Returns the Texture2D to draw and, via the returned Dictionary, whether the
+## caller should mirror it horizontally (`flip_h`). For the soldier the side art
+## faces LEFT, so RIGHT is returned with flip_h = true.
+##
+## Only call this when has_texture_art(unit_id) is true; for other units use
+## for_unit_dir() (ASCII grid).
+static func for_unit_dir_texture(unit_id: String, facing: String, attacking: bool) -> Dictionary:
+	# Default: no horizontal flip (front/back/left art is drawn as-is).
+	var flip := false
+	if unit_id == &"soldier":
+		# Side art faces LEFT; mirror it when the unit faces RIGHT.
+		if facing == DIR_RIGHT:
+			flip = SIDE_FLIP_FOR_RIGHT
+	return {
+		&"texture": _soldier_tex(facing, attacking),
+		&"flip_h": flip,
+		&"size": SOLDIER_DRAW_SIZE,
+	}
 
 
 static func for_enemy(enemy_id: String) -> PackedStringArray:

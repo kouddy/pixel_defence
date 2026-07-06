@@ -51,10 +51,7 @@ func _ready() -> void:
 
 func _apply_data() -> void:
 	if sprite and sprite is PixelSprite:
-		# Directional sprite for the current facing/stance (front idle by default).
-		sprite.set_flip_h(_facing == PixelArt.DIR_LEFT)
-		sprite.configure(PixelArt.for_unit_dir(data.id, _facing, _attacking),
-				PixelArt.PALETTE, 2.0)
+		_apply_sprite()
 		_applied_facing = _facing
 		_applied_attacking = _attacking
 	# Range preview rect sized to range.
@@ -282,11 +279,25 @@ func _refresh_sprite() -> void:
 	if _facing == _applied_facing and _attacking == _applied_attacking:
 		return
 	if sprite and sprite is PixelSprite:
+		_apply_sprite()
+	_applied_facing = _facing
+	_applied_attacking = _attacking
+
+
+## Push the current (facing, stance) to the sprite. Units with SVG art (the
+## soldier) render via a texture; everything else uses the ASCII grid. The flip
+## convention differs: side art faces LEFT for the soldier (RIGHT is mirrored),
+## while the ASCII side grids face RIGHT (LEFT is mirrored) — so the flip flag is
+## taken from the chosen art source rather than inferred here.
+func _apply_sprite() -> void:
+	if PixelArt.has_texture_art(data.id):
+		var t: Dictionary = PixelArt.for_unit_dir_texture(data.id, _facing, _attacking)
+		sprite.set_flip_h(t[&"flip_h"])
+		sprite.configure_texture(t[&"texture"], t[&"size"])
+	else:
 		sprite.set_flip_h(_facing == PixelArt.DIR_LEFT)
 		sprite.configure(PixelArt.for_unit_dir(data.id, _facing, _attacking),
 				PixelArt.PALETTE, 2.0)
-	_applied_facing = _facing
-	_applied_attacking = _attacking
 
 
 ## Visible feedback for melee: a quick lunge toward the target + a slash arc.

@@ -1,0 +1,3 @@
+# Tell Godot to skip this directory entirely: these are the high-res rasterized
+# originals of the soldier art, kept only as reference. The SVGs (one folder up,
+# in assets/) are the source of truth the game imports.
