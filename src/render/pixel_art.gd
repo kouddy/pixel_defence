@@ -66,8 +66,23 @@ const PALETTE := {
 	"N": Color(0.92, 0.94, 0.98),
 }
 
+# ============================ DIRECTION CONSTANTS ============================
+# Four-way facing for characters. Standard RPG mapping relative to the screen:
+#   FRONT  = facing the camera  (target is BELOW the tower)
+#   BACK   = facing away        (target is ABOVE the tower)
+#   RIGHT  = facing east        (target is to the right)
+#   LEFT   = facing west        (target is to the left; rendered by flipping RIGHT)
+const DIR_FRONT := &"front"
+const DIR_BACK  := &"back"
+const DIR_LEFT  := &"left"
+const DIR_RIGHT := &"right"
+const STANCE_IDLE    := false
+const STANCE_ATTACK  := true
+
 # ============================ DEFENDERS ============================
 
+# Soldier — canonical single orientation (kept for shop previews / fallback).
+# Aliases the FRONT idle grid so there is one source of truth for the front look.
 const SOLDIER := [
 	"................",
 	"......I.........",   # helmet plume
@@ -75,7 +90,7 @@ const SOLDIER := [
 	"....KKiiiiKK....",   # steel helmet
 	"...KiiiiiiiiK...",
 	"...KiIIIIIIiK...",   # visor
-	"...KiIiiiiIiK...",   # eye slits
+	"...KiAiiAiAik...",   # eye slits
 	"...KiiiiiiiiK...",
 	"....KSSSSSSK....",   # chin
 	"...AArrrrrrAA.i.",   # shoulders + sword blade
@@ -85,6 +100,127 @@ const SOLDIER := [
 	"...KArrrrrrAK.i.",   # belt + pommel
 	"....Kmm..mmK....",   # legs
 	"...KKKK..KKKK...",
+]
+
+# --- Soldier, FRONT (toward camera) -------------------------------------
+# Plume + visor visible, sword held upright at rest (idle) / raised overhead
+# then chopped down (attack).
+const SOLDIER_FRONT_IDLE := [
+	"................",
+	"......I.........",   # helmet plume
+	"......I.........",
+	"....KKiiiiKK....",   # steel helmet
+	"...KiiiiiiiiK...",
+	"...KiIIIIIIiK...",   # visor
+	"...KiAiiAiAik...",   # eye slits (front: both eyes)
+	"...KiiiiiiiiK...",
+	"....KSSSSSSK....",   # chin
+	"...AArrrrrrAA.i.",   # shoulders + sword blade (at side)
+	"..ArrrrrrrrrRA.i",   # shield body
+	"..ArrrrrrrrrRA.i",
+	"..ArrrrrrrrrRA.i",
+	"...KArrrrrrAK.i.",   # belt + pommel
+	"....Kmm..mmK....",   # legs
+	"...KKKK..KKKK...",
+]
+
+const SOLDIER_FRONT_ATTACK := [
+	"....i...........",   # sword pommel raised overhead
+	"....Z...........",
+	"....Z...........",
+	"....Z...........",   # blade up
+	"....Z...........",
+	"...KiiiiiiiiK...",   # helmet tilted to strike
+	"...KiIIIIIIiK...",   # visor
+	"...KiAiiAiAik...",   # eyes
+	"...KSSSSSSSSK...",   # jaw forward
+	"...ArrrrrrrRAZ..",   # shoulders + sword coming down
+	"..ArrrrrrrrrRAZ.",   # shield + blade tip
+	"..ArrrrrrrrrRA.i",
+	"..ArrrrrrrrrRA.i",
+	"...KArrrrrrAK.i.",
+	"....Kmm..mmK....",
+	"...KKKK..KKKK...",
+]
+
+# --- Soldier, BACK (away from camera) -----------------------------------
+# No eyes; plume + helmet back + scabbard visible. Attack = overhead chop.
+const SOLDIER_BACK_IDLE := [
+	"................",
+	"......I.........",   # plume (seen from behind)
+	"......I.........",
+	"....KKiiiiKK....",   # back of helmet
+	"...KiiiiiiiiK...",
+	"...KiiiiiiiiK...",
+	"...KiiiiiiiiK...",   # no visor eyes from behind
+	"...KiiiiiiiiK...",
+	"....KAAAAAAK....",   # collar / back of neck
+	"...AArrrrrrAA.i.",   # shoulders + scabbard
+	"..ArrrrrrrrrRA.i",
+	"..ArrrrrrrrrRA.i",
+	"..ArrrrrrrrrRA.i",
+	"...KArrrrrrAK.i.",
+	"....Kmm..mmK....",
+	"...KKKK..KKKK...",
+]
+
+const SOLDIER_BACK_ATTACK := [
+	"....i...........",   # sword raised overhead
+	"....Z...........",
+	"....Z...........",
+	"....Z...........",
+	"....Z...........",
+	"...KiiiiiiiiK...",   # helmet back
+	"...KiiiiiiiiK...",
+	"...KiiiiiiiiK...",
+	"...KAAAAAAA K...",   # collar straining forward
+	"...ArrrrrrrRAZ..",   # sword chop
+	"..ArrrrrrrrrRAZ.",
+	"..ArrrrrrrrrRA.i",
+	"..ArrrrrrrrrRA.i",
+	"...KArrrrrrAK.i.",
+	"....Kmm..mmK....",
+	"...KKKK..KKKK...",
+]
+
+# --- Soldier, SIDE (drawn facing RIGHT; flipped for LEFT) ---------------
+# Profile: one eye, helmet profile, sword forward in a thrust.
+const SOLDIER_SIDE_IDLE := [
+	"................",
+	"......I.........",   # plume trails back
+	"......I.........",
+	"....KKiiiiKK....",   # helmet profile
+	"...KiiiiiiiK....",
+	"...KiiIIIIIK....",   # brow
+	"...KiiiAiiiK....",   # single eye (profile)
+	"...KiiiiiiiK....",
+	"....KSSSSSK.....",   # chin/jaw
+	"....AArrrrAA.i..",   # shoulder + sword at side
+	"...ArrrrrrrRA.i.",   # shield (small, edge-on)
+	"...ArrrrrrrRA.i.",
+	"...ArrrrrrrRA.i.",
+	"...KArrrrrAK.i..",
+	"....Kmm.mmK.....",   # legs (one slightly forward)
+	"...KKKK.KKKK....",
+]
+
+const SOLDIER_SIDE_ATTACK := [
+	"................",
+	"......I.........",
+	"......I.........",
+	"....KKiiiiKKZ...",   # helmet + sword thrust forward (right)
+	"...KiiiiiiiZ....",   # blade
+	"...KiiIIIIIZ....",
+	"...KiiiAiiiZm..",   # eye + pommel extended
+	"...Kiiiiiiim...",   # arm
+	"....KSSSSSK.....",
+	"....AArrrrAA....",   # shoulder leaning into thrust
+	"...ArrrrrrrRA.i.",
+	"...ArrrrrrrRA.i.",
+	"...ArrrrrrrRA.i.",
+	"...KArrrrrAK.i..",
+	"....Kmm.mmK.....",
+	"...KKKK.KKKK....",
 ]
 
 const ARCHER := [
@@ -557,6 +693,34 @@ static func for_unit(unit_id: String) -> PackedStringArray:
 		&"frost_mage":  return FROST_MAGE
 		&"catapult":    return CATAPULT
 	return SOLDIER
+
+
+## Directional + stance sprite for a defender.
+## `facing` is one of DIR_FRONT / DIR_BACK / DIR_LEFT / DIR_RIGHT.
+## `attacking` selects the attack pose (true) or idle pose (false).
+##
+## LEFT is always rendered as the RIGHT grid flipped horizontally by the caller,
+## so this returns the SIDE grid for both LEFT and RIGHT.
+##
+## Units that don't yet have directional art (everything except the soldier for
+## now) fall back to their single canonical sprite — the game keeps working
+## unchanged until you add their grids below.
+static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> PackedStringArray:
+	match unit_id:
+		&"soldier":
+			# LEFT uses the same SIDE grids as RIGHT — the caller flips the sprite.
+			match facing:
+				DIR_FRONT:
+					return SOLDIER_FRONT_ATTACK if attacking else SOLDIER_FRONT_IDLE
+				DIR_BACK:
+					return SOLDIER_BACK_ATTACK if attacking else SOLDIER_BACK_IDLE
+				DIR_LEFT, DIR_RIGHT:
+					return SOLDIER_SIDE_ATTACK if attacking else SOLDIER_SIDE_IDLE
+				_:
+					return SOLDIER_FRONT_IDLE
+	# Graceful fallback: units without directional art render their single grid
+	# in every facing/stance so nothing breaks.
+	return for_unit(unit_id)
 
 
 static func for_enemy(enemy_id: String) -> PackedStringArray:

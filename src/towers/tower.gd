@@ -19,6 +19,18 @@ var _enemies: Array = []   # injected by GameWorld each frame via set_enemies
 var _show_range: bool = false
 var target_mode: int = TargetMode.FIRST   # player-selected targeting priority
 
+# Facing / stance (directional sprites).
+# `_facing`/`_attacking` hold the desired state; `_applied_*` mirror what the
+# sprite is currently showing so we only call configure() when something
+# actually changes (avoids a redraw every frame).
+var _facing: String = PixelArt.DIR_FRONT
+var _attacking: bool = false
+var _attack_pose_until: float = 0.0      # Time.get_ticks_msec() when pose ends
+var _applied_facing: String = ""         # "" forces a first refresh
+var _applied_attacking: bool = false
+var _current_target: Node2D = null       # last acquired target, for facing each frame
+const ATTACK_POSE_MS := 130.0           # how long the attack stance shows per shot
+
 # Upgrade state.
 var level: int = 0                       # 0 = base, up to Upgrades.MAX_LEVEL
 var invested_gold: int = 0               # total gold sunk into this tower
@@ -39,7 +51,12 @@ func _ready() -> void:
 
 func _apply_data() -> void:
 	if sprite and sprite is PixelSprite:
-		sprite.configure(PixelArt.for_unit(data.id), PixelArt.PALETTE, 2.0)
+		# Directional sprite for the current facing/stance (front idle by default).
+		sprite.set_flip_h(_facing == PixelArt.DIR_LEFT)
+		sprite.configure(PixelArt.for_unit_dir(data.id, _facing, _attacking),
+				PixelArt.PALETTE, 2.0)
+		_applied_facing = _facing
+		_applied_attacking = _attacking
 	# Range preview rect sized to range.
 	if range_visual:
 		var rs := data.range_px * 2
@@ -162,6 +179,16 @@ func _process(dt: float) -> void:
 	if sprite:
 		var t := Time.get_ticks_msec() * 0.0015 + _sway_phase
 		sprite.rotation = sin(t) * 0.04
+	# Keep facing whatever we're currently shooting at. The target is only
+	# refreshed when a shot fires (below), so this is O(1) per frame — it does
+	# not scan all enemies. If the target is gone/out of range we hold the last
+	# facing rather than snapping back, which reads more naturally.
+	if is_instance_valid(_current_target):
+		_facing = _facing_to(_current_target.global_position)
+	# End the attack pose once it expires, returning to idle.
+	if _attacking and Time.get_ticks_msec() >= _attack_pose_until:
+		_attacking = false
+	_refresh_sprite()
 	_cooldown -= dt
 	if _cooldown > 0.0:
 		return
@@ -218,6 +245,13 @@ func target_mode_label() -> String:
 
 func _fire(target: Node2D) -> void:
 	_cooldown = 1.0 / max(0.0001, data.fire_rate)
+	# Start the attack pose: face the target and hold the attacking stance for a
+	# short beat so the swing/thrust reads visually.
+	_current_target = target
+	_facing = _facing_to(target.global_position)
+	_attacking = true
+	_attack_pose_until = Time.get_ticks_msec() + ATTACK_POSE_MS
+	_refresh_sprite()
 	match data.attack_type:
 		UnitData.AttackType.MELEE:
 			_apply_damage([target])
@@ -226,6 +260,33 @@ func _fire(target: Node2D) -> void:
 			_spawn_projectile(target)
 		UnitData.AttackType.SPLASH:
 			_spawn_projectile(target, true)
+
+
+## Quantize the direction from this tower to `target_pos` into one of the four
+## screen-space facings. Standard RPG mapping:
+##   target below -> FRONT, above -> BACK, left -> LEFT, right -> RIGHT.
+func _facing_to(target_pos: Vector2) -> String:
+	var d: Vector2 = target_pos - global_position
+	if d.length_squared() < 0.001:
+		return _facing   # on top of us; keep current facing
+	# Diagonals resolved by whichever axis dominates, with a vertical bias so a
+	# target roughly on the same row reads as a side view rather than front/back.
+	if absf(d.y) >= absf(d.x) * 0.9:
+		return PixelArt.DIR_FRONT if d.y > 0.0 else PixelArt.DIR_BACK
+	return PixelArt.DIR_LEFT if d.x < 0.0 else PixelArt.DIR_RIGHT
+
+
+## Reconfigure the sprite only when facing or stance actually changed since the
+## last frame. Cheap guard so we don't redraw the ASCII grid 60 times/sec.
+func _refresh_sprite() -> void:
+	if _facing == _applied_facing and _attacking == _applied_attacking:
+		return
+	if sprite and sprite is PixelSprite:
+		sprite.set_flip_h(_facing == PixelArt.DIR_LEFT)
+		sprite.configure(PixelArt.for_unit_dir(data.id, _facing, _attacking),
+				PixelArt.PALETTE, 2.0)
+	_applied_facing = _facing
+	_applied_attacking = _attacking
 
 
 ## Visible feedback for melee: a quick lunge toward the target + a slash arc.
