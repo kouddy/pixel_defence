@@ -95,6 +95,13 @@ const SOLDIER_TEX_BACK_ATTACK   := preload("res://assets/soldier_back_attack.svg
 const SOLDIER_TEX_SIDE_IDLE     := preload("res://assets/soldier_left_non_attack.svg")
 const SOLDIER_TEX_SIDE_ATTACK   := preload("res://assets/soldier_left_attack.svg")
 
+const ARCHER_TEX_FRONT_IDLE    := preload("res://assets/archer_front_non_attack.svg")
+const ARCHER_TEX_FRONT_ATTACK  := preload("res://assets/archer_front_attack.svg")
+const ARCHER_TEX_BACK_IDLE     := preload("res://assets/archer_back_non_attack.svg")
+const ARCHER_TEX_BACK_ATTACK   := preload("res://assets/archer_back_attack.svg")
+const ARCHER_TEX_SIDE_IDLE     := preload("res://assets/archer_left_non_attack.svg")
+const ARCHER_TEX_SIDE_ATTACK   := preload("res://assets/archer_left_attack.svg")
+
 # Side art faces LEFT, so the RIGHT facing needs a horizontal flip.
 #   facing LEFT  -> flip_h = false (art already faces left)
 #   facing RIGHT -> flip_h = true  (mirror the left-facing art)
@@ -120,10 +127,22 @@ static func _soldier_tex(facing: String, attacking: bool) -> Texture2D:
 	return SOLDIER_TEX_FRONT_IDLE
 
 
+## Returns the archer texture for a (facing, stance) pair.
+static func _archer_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return ARCHER_TEX_FRONT_ATTACK if attacking else ARCHER_TEX_FRONT_IDLE
+		DIR_BACK:
+			return ARCHER_TEX_BACK_ATTACK if attacking else ARCHER_TEX_BACK_IDLE
+		DIR_LEFT, DIR_RIGHT:
+			return ARCHER_TEX_SIDE_ATTACK if attacking else ARCHER_TEX_SIDE_IDLE
+	return ARCHER_TEX_FRONT_IDLE
+
+
 ## Whether a given unit should render via SVG textures (texture mode) rather
-## than the ASCII grid. Today only the soldier has vector art.
+## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
-	return unit_id == &"soldier"
+	return unit_id in [&"soldier", &"archer"]
 
 # ============================ DEFENDERS ============================
 
@@ -1049,12 +1068,22 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 static func for_unit_dir_texture(unit_id: String, facing: String, attacking: bool) -> Dictionary:
 	# Default: no horizontal flip (front/back/left art is drawn as-is).
 	var flip := false
-	if unit_id == &"soldier":
-		# Side art faces LEFT; mirror it when the unit faces RIGHT.
-		if facing == DIR_RIGHT:
-			flip = SIDE_FLIP_FOR_RIGHT
+	var tex: Texture2D
+
+	match unit_id:
+		&"soldier":
+			tex = _soldier_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"archer":
+			tex = _archer_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		_:
+			tex = SOLDIER_TEX_FRONT_IDLE
+
 	return {
-		&"texture": _soldier_tex(facing, attacking),
+		&"texture": tex,
 		&"flip_h": flip,
 		&"size": SOLDIER_DRAW_SIZE,
 	}

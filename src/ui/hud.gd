@@ -31,7 +31,7 @@ const SPEED_OPTIONS := [1.0, 2.0]
 @onready var start_wave_btn: Button = %StartWaveButton
 @onready var pause_btn: Button = %PauseButton
 @onready var speed_btn: Button = %SpeedButton
-@onready var build_container: HBoxContainer = %BuildContainer
+@onready var build_container: HFlowContainer = %BuildContainer
 @onready var tower_panel: Panel = %TowerPanel
 @onready var tp_name: Label = %TPName
 @onready var tp_rank: Label = %TPRank
@@ -128,6 +128,8 @@ func _build_unit_buttons() -> void:
 ## Grey out build buttons the player can't afford, so the economy is legible.
 ## Also refresh the tower-panel Upgrade button affordability while it's open.
 func _process(dt: float) -> void:
+	if not is_instance_valid(build_container):
+		return
 	for btn in build_container.get_children():
 		if not btn is Button:
 			continue

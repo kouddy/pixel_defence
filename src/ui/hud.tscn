@@ -73,9 +73,6 @@ grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTransparent_bot")
 
-# Build bar: a wrapping HFlowContainer so the tower roster (up to 13 on the
-# finale) wraps to a second row instead of overflowing off-screen. Replaces the
-# old single-row HBoxContainer; the bottom bar is taller to fit two rows.
 [node name="BuildContainer" type="HFlowContainer" parent="BottomBar"]
 unique_name_in_owner = true
 anchor_right = 1.0
