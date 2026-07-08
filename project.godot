@@ -1,8 +1,15 @@
-; Pixel Defence - Godot project configuration
-; Engine version: Godot 4.x
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
 config_version=5
 
 [application]
+
 config/name="Pixel Defence"
 config/description="A pixel-art medieval-fantasy tower defence."
 run/main_scene="res://src/ui/main_menu.tscn"
@@ -10,22 +17,25 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
+
 GameManager="*res://src/autoload/game_manager.gd"
 Save="*res://src/autoload/save.gd"
 FX="*res://src/autoload/fx.gd"
 SFX="*res://src/autoload/sfx.gd"
 
 [display]
+
 window/size/viewport_width=832
 window/size/viewport_height=468
 window/stretch/mode="viewport"
-window/stretch/aspect="keep"
 
 [layer_names]
+
 2d_render/use_pixel_snap=true
 
 [rendering]
+
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.07, 0.07, 0.11, 1)

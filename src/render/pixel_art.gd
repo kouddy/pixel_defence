@@ -102,6 +102,20 @@ const ARCHER_TEX_BACK_ATTACK   := preload("res://assets/archer_back_attack.svg")
 const ARCHER_TEX_SIDE_IDLE     := preload("res://assets/archer_left_non_attack.svg")
 const ARCHER_TEX_SIDE_ATTACK   := preload("res://assets/archer_left_attack.svg")
 
+const KNIGHT_TEX_FRONT_IDLE_PATH    := "res://assets/knight_front_non_attack.svg"
+const KNIGHT_TEX_FRONT_ATTACK_PATH  := "res://assets/knight_front_attack.svg"
+const KNIGHT_TEX_BACK_IDLE_PATH     := "res://assets/knight_back_non_attack.svg"
+const KNIGHT_TEX_BACK_ATTACK_PATH   := "res://assets/knight_back_attack.svg"
+const KNIGHT_TEX_SIDE_IDLE_PATH     := "res://assets/knight_left_non_attack.svg"
+const KNIGHT_TEX_SIDE_ATTACK_PATH   := "res://assets/knight_left_attack.svg"
+
+const WIZARD_TEX_FRONT_IDLE_PATH    := "res://assets/wizard_front_non_attack.svg"
+const WIZARD_TEX_FRONT_ATTACK_PATH  := "res://assets/wizard_front_attack.svg"
+const WIZARD_TEX_BACK_IDLE_PATH     := "res://assets/wizard_back_non_attack.svg"
+const WIZARD_TEX_BACK_ATTACK_PATH   := "res://assets/wizard_back_attack.svg"
+const WIZARD_TEX_SIDE_IDLE_PATH     := "res://assets/wizard_left_non_attack.svg"
+const WIZARD_TEX_SIDE_ATTACK_PATH   := "res://assets/wizard_left_attack.svg"
+
 # Side art faces LEFT, so the RIGHT facing needs a horizontal flip.
 #   facing LEFT  -> flip_h = false (art already faces left)
 #   facing RIGHT -> flip_h = true  (mirror the left-facing art)
@@ -139,10 +153,34 @@ static func _archer_tex(facing: String, attacking: bool) -> Texture2D:
 	return ARCHER_TEX_FRONT_IDLE
 
 
+## Returns the knight texture for a (facing, stance) pair.
+static func _knight_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(KNIGHT_TEX_FRONT_ATTACK_PATH if attacking else KNIGHT_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(KNIGHT_TEX_BACK_ATTACK_PATH if attacking else KNIGHT_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(KNIGHT_TEX_SIDE_ATTACK_PATH if attacking else KNIGHT_TEX_SIDE_IDLE_PATH)
+	return load(KNIGHT_TEX_FRONT_IDLE_PATH)
+
+
+## Returns the wizard texture for a (facing, stance) pair.
+static func _wizard_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(WIZARD_TEX_FRONT_ATTACK_PATH if attacking else WIZARD_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(WIZARD_TEX_BACK_ATTACK_PATH if attacking else WIZARD_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(WIZARD_TEX_SIDE_ATTACK_PATH if attacking else WIZARD_TEX_SIDE_IDLE_PATH)
+	return load(WIZARD_TEX_FRONT_IDLE_PATH)
+
+
 ## Whether a given unit should render via SVG textures (texture mode) rather
 ## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
-	return unit_id in [&"soldier", &"archer"]
+	return unit_id in [&"soldier", &"archer", &"knight", &"wizard"]
 
 # ============================ DEFENDERS ============================
 
@@ -1077,6 +1115,14 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 				flip = SIDE_FLIP_FOR_RIGHT
 		&"archer":
 			tex = _archer_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"knight":
+			tex = _knight_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"wizard":
+			tex = _wizard_tex(facing, attacking)
 			if facing == DIR_RIGHT:
 				flip = SIDE_FLIP_FOR_RIGHT
 		_:
