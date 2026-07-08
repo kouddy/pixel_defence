@@ -18,7 +18,11 @@ signal speed_changed(multiplier: float)
 signal restart_requested
 signal quit_to_menu_requested
 
-const BTN_SIZE := Vector2(120, 70)
+# Build-bar button size. Slightly smaller than the action buttons so the full
+# tower roster (up to 13 on the finale level) fits before the HFlowContainer
+# wraps to a second row. The Start/Pause/Speed buttons keep their own larger
+# minimum sizes, set in hud.tscn.
+const BTN_SIZE := Vector2(74, 46)
 const SPEED_OPTIONS := [1.0, 2.0]
 
 @onready var gold_label: Label = %GoldLabel
@@ -109,7 +113,7 @@ func _build_unit_buttons() -> void:
 		# Color-coded swatch + clean name/cost layout for instant readability.
 		btn.text = "● %s\n%d💰" % [data.display_name, data.cost]
 		btn.tooltip_text = "%s\nCost: %d gold" % [data.description, data.cost]
-		btn.add_theme_font_size_override("font_size", 13)
+		btn.add_theme_font_size_override("font_size", 10)
 		# Tint the button text with the unit's identity color so it matches the
 		# in-world sprite and the player learns the color -> unit mapping.
 		btn.add_theme_color_override("font_color", data.color.lightened(0.2))

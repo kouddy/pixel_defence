@@ -141,8 +141,7 @@ const Banshee := {
 	&"gold_reward": 16,
 }
 
-# Hydra: the finale boss. Flying, huge HP, leaks 6 lives. Surviving it (and its
-# escort) is the win condition for the whole story arc.
+# Hydra: the finale boss of the first arc. Flying, huge HP, leaks 6 lives.
 const Hydra := {
 	&"id": &"hydra",
 	&"display_name": "Hydra",
@@ -155,8 +154,104 @@ const Hydra := {
 	&"leaks_damage": 6,
 }
 
+# --- Enemies introduced via the extended story arc (levels 7-12) ---
+
+# Vampire: regenerating undead. Heals as it advances, undoing chip damage like a
+# Troll but faster and lighter — must be burst down before it self-sustains.
+const Vampire := {
+	&"id": &"vampire",
+	&"display_name": "Vampire",
+	&"color": Color(0.55, 0.12, 0.18),
+	&"radius": 16,
+	&"max_hp": 80.0,
+	&"speed": 70.0,
+	&"gold_reward": 15,
+	&"regen": 6.0,
+}
+
+# Zombie: slow, relentless wall. High HP for its cost; pressure by attrition
+# rather than speed — it just keeps coming.
+const Zombie := {
+	&"id": &"zombie",
+	&"display_name": "Zombie",
+	&"color": Color(0.48, 0.62, 0.42),
+	&"radius": 16,
+	&"max_hp": 90.0,
+	&"speed": 35.0,
+	&"gold_reward": 10,
+	&"armor": 1.0,
+}
+
+# Mummy: tomb guardian. Heavily armored and tough — armor eats fast light hits,
+# so it wants burst or splash, not chip.
+const Mummy := {
+	&"id": &"mummy",
+	&"display_name": "Mummy",
+	&"color": Color(0.82, 0.74, 0.48),
+	&"radius": 18,
+	&"max_hp": 120.0,
+	&"speed": 45.0,
+	&"gold_reward": 14,
+	&"armor": 3.0,
+}
+
+# Orc: disciplined warband infantry. Solid HP + armor at a steady pace — the
+# dependable backbone of an orc assault.
+const Orc := {
+	&"id": &"orc",
+	&"display_name": "Orc",
+	&"color": Color(0.50, 0.58, 0.32),
+	&"radius": 17,
+	&"max_hp": 110.0,
+	&"speed": 60.0,
+	&"gold_reward": 14,
+	&"armor": 2.0,
+}
+
+# Witch: hexing flyer. Frail but airborne and quick — punishes defences that
+# dropped their anti-air after the early arc.
+const Witch := {
+	&"id": &"witch",
+	&"display_name": "Witch",
+	&"color": Color(0.35, 0.20, 0.55),
+	&"radius": 15,
+	&"max_hp": 60.0,
+	&"speed": 75.0,
+	&"gold_reward": 16,
+	&"is_flying": true,
+}
+
+# Gargoyle: stone sentinel. Flying AND armored — a heavy air unit that shrugs off
+# arrows and demands concentrated anti-air.
+const Gargoyle := {
+	&"id": &"gargoyle",
+	&"display_name": "Gargoyle",
+	&"color": Color(0.46, 0.46, 0.52),
+	&"radius": 18,
+	&"max_hp": 150.0,
+	&"speed": 55.0,
+	&"gold_reward": 22,
+	&"armor": 4.0,
+	&"is_flying": true,
+}
+
+# Demon Lord: the true finale boss. Flying, colossal HP, leaks 7 lives — the
+# capstone threat of the extended arc, looming over the Gates of the Abyss.
+const DemonLord := {
+	&"id": &"demon_lord",
+	&"display_name": "Demon Lord",
+	&"color": Color(0.55, 0.10, 0.12),
+	&"radius": 30,
+	&"max_hp": 1100.0,
+	&"speed": 35.0,
+	&"gold_reward": 200,
+	&"is_flying": true,
+	&"leaks_damage": 7,
+}
+
 const ALL := [Goblin, Skeleton, Ghost, Bat, Wolf, Demon, Troll, Dragon,
-	CursedSkull, Wraith, Hellhound, Banshee, Hydra]
+	CursedSkull, Wraith, Hellhound, Banshee, Hydra,
+	Vampire, Zombie, Mummy, Orc, Witch, Gargoyle, DemonLord]
 
 
 static func make(key: Dictionary) -> EnemyData:

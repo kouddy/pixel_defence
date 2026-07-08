@@ -628,6 +628,128 @@ const CATAPULT := [
 	"................",
 ]
 
+# ============================ TOWERS (extended arc, levels 7-12) ============================
+
+# Cleric — white/gold priest, halo + holy mace. Splash dazzle support.
+const CLERIC := [
+	"................",
+	".......z........",   # halo
+	"......zzz.......",
+	".....zzzzz......",
+	"....wnwwwn......",   # hood
+	"...nwwwwwwn.....",
+	"...nwSSSwwn.w...",   # face + mace shaft
+	"...nwKwKwwn.w...",   # eyes
+	"...nwSSSwwn.w...",
+	"....nwwwwn..w...",
+	"...zzwwwwzz.Y...",   # gold-trim robe + mace head
+	"..zwwwwwwwwz.Y..",
+	"..zwwwwwwwwz.m..",
+	"...KwwwwwwK.m...",
+	"...Kmm..mmK.....",
+	"..KKKK..KKKK....",
+]
+
+# Paladin — gold-trim plate armor + warhammer. Heavy holy frontline.
+const PALADIN := [
+	"................",
+	"......y.........",   # plume
+	"......y.........",
+	"....KKiiiiKK....",   # helm
+	"...KiiiiiiiiK...",
+	"...KiIIIIIIiK...",   # visor
+	"...KiAiiAiAik...",   # eyes
+	"...KiiiiiiiiK...",
+	"....KSSSSSSK....",   # chin
+	"...AAyyyyyAA.Z..",   # shoulders + hammer head
+	"..AyyyyyyyyyAZ..",   # gold chest plate + shaft
+	"..AyyyyyyyyyAZ..",
+	"..AyyyyyyyyyA...",
+	"...KAyyyyyAK....",   # belt
+	"....Kmm..mmK....",   # legs
+	"...KKKK..KKKK...",
+]
+
+# Bard — purple hood + lute. Wide-slow crowd control.
+const BARD := [
+	"................",
+	"......p.........",   # hood tip
+	".....ppp........",
+	"....ppppp.......",
+	"...ppuuupp......",
+	"..ppuuuuup......",   # hood
+	"..Puuuuuup......",
+	"..PnSSSSnP..u...",   # face + lute
+	"..PuwnwwnP..u...",
+	"...PnnnnP...u...",
+	"...PPmmPP..uuu..",   # robe + lute body
+	"..PmmmmmmP.uYuu.",   # lute strings
+	"..PmmmmmmP.uuuu.",
+	"...KmmmmK..uuu..",
+	"...Km..mK.......",
+	"..KKK..KKK......",
+]
+
+# Alchemist — green hood, lobbed flasks. Ranged splash over the front line.
+const ALCHEMIST := [
+	"................",
+	"......q.........",   # hood tip
+	".....gqg........",
+	"....ggqgg.......",
+	"...ggGgGgg......",   # hood
+	"..ggGsssGg......",
+	"..gGsKsKsGg..q..",   # eyes + flask
+	"..gGsssssg..q...",
+	"...gGSSSSg..g...",   # face + flask neck
+	"...GGmmGG...y...",   # apron + flask body
+	"..MmmGGmmM..g...",
+	"..MmmmmmmM..y...",
+	"...KmmmmK...g...",
+	"...Km..mK.......",
+	"..KKK..KKK......",
+	"................",
+]
+
+# Prince — blue royal + crossbow. Fast accurate single shots, hits air.
+const PRINCE := [
+	"................",
+	".....y.y.y......",   # crown
+	"....KKKKKK......",
+	"...KiiiiiiK.....",
+	"...KiIIIIiK..M..",   # face + crossbow stock
+	"...KiAiiAiK.Mm..",   # eyes
+	"...KiiiiiiK.Mm..",
+	"....KSSSSK..m...",   # chin
+	"...bBccccBb.mZ..",   # royal shoulders + bolt
+	"..bBBccccBBb.m..",   # blue tunic
+	"..bBcccccBb.m...",
+	"..bBcccccBb.m...",
+	"...KBccccBK.....",
+	"....Kmm.mmK.....",
+	"...KKK..KKK.....",
+	"................",
+]
+
+# Princess — pink gown + wand. Long-range enchanted bolts, slows on hit.
+const PRINCESS := [
+	"................",
+	".....y.y.y......",   # crown
+	"....KKKKKK......",
+	"...KppppppK.....",
+	"...KpSSSSpK..u..",   # face + wand orb
+	"...KpAwWpK...p..",   # eyes
+	"...KppppppK..p..",
+	"....KSSSSK...p..",   # chin
+	"...pppppppp..m..",   # dress shoulders
+	"..ppuuuuuupp.m..",   # gown
+	"..ppuuuuuupp.m..",
+	"..pppuupppp.....",
+	"...KpppppK......",
+	"....Kmm.mK......",
+	"...KKK..KKK.....",
+	"................",
+]
+
 # ============================ ENEMIES (story unlocks) ============================
 
 const CURSED_SKULL := [
@@ -725,6 +847,148 @@ const HYDRA := [
 	".KKKK....KKKK...",
 ]
 
+# ============================ ENEMIES (extended arc, levels 7-12) ============================
+
+# Vampire — black-cloaked regenerator with a high collar and red eyes.
+const VAMPIRE := [
+	"................",
+	"....PPPP........",   # swept hair
+	"...PuuuuP......",
+	"..PuuuuuuP......",
+	".PuKKuuKKuP.....",   # red eyes
+	".PuuuuuuuuP.....",
+	".PuCCuuCCuuP....",   # fanged mouth
+	".PuuuuuuuuP.....",
+	"..PuKKuuKKuP....",   # collar bones
+	".PPuuuuuuPP.....",
+	".PPuuuuuuPP.....",
+	"..PuuuuuuP......",   # cloak
+	"..P.uu.uu.P.....",
+	"..P......P......",
+	".PP......PP.....",
+	"................",
+]
+
+# Zombie — green-skinned corpse, tattered, one eye glowing.
+const ZOMBIE := [
+	"................",
+	"................",
+	"....HHHHHH......",
+	"...HhhhHHhH.....",   # lopsided head
+	"..HhhKhhhKhh....",   # eyes (one dark, one socket)
+	"..HhhhFhhhhhh...",   # one glowing eye
+	"..Hhhhhhhhhh....",
+	"...HhKKKKHh.....",   # broken teeth
+	"....HnnnnH......",
+	"...nnWnnWnn.....",   # exposed ribs
+	"...nnnnnnnn.....",
+	"....Hn..nH......",
+	"...HHH..HHH.....",
+	"..HH......HH....",
+	"................",
+	"................",
+]
+
+# Mummy — bandaged undead, wrapped in off-white strips with amber trim.
+const MUMMY := [
+	"................",
+	"....nnnnnn......",
+	"...nnnnnnnn.....",
+	"..nnKKnnKKnn....",   # brow
+	"..nddnnnnddn....",   # eye sockets
+	"..nnKKnnKKnn....",
+	"...nnKKKKnn.....",   # mouth wrap
+	"....nnnnnn......",
+	"...WnWWWWnW.....",   # crossed bandages
+	"..WWnWnnWnWW....",
+	"..WnWWWWWWnW....",
+	"..WWnWnnWnWW....",
+	"...WnWWWWnW.....",
+	"...yy....yy.....",   # tattered legs
+	"..yyy....yyy....",
+	"................",
+]
+
+# Orc — green-skinned warrior with a heavy brow and tusks.
+const ORC := [
+	"................",
+	"................",
+	"...Hh......hH...",
+	"..HHHh....hHHH..",
+	".HHhHHhhhhHHhH..",
+	".HhKKKhhhhKKKhH.",   # heavy brow
+	".HhhRrhRRhrRhhH.",   # eyes
+	".HhhhmmmmhhhhH..",   # flat snout
+	".HhhKKmmKKhhhh..",   # tusks
+	"..HhhhhhhhhhH...",
+	"..HHhhhhhhhHH...",
+	"...Hhh....hhH...",   # arms
+	"...HH......HH...",
+	"..HHHH....HHHH..",
+	"................",
+	"................",
+]
+
+# Witch — pointed hat + broom. Flying hexer.
+const WITCH := [
+	"....P...........",   # hat tip
+	"...PP...........",
+	"..PPP...........",
+	".PPPP...........",
+	"PPPPP...........",   # brim
+	".PuSSuP.........",   # face under hat
+	".PuCCuP.....m...",   # eyes + broom shaft
+	".PuuuuP.....m...",
+	".PuCCuP.....m...",
+	"..PuuP......M...",   # broom bristles
+	"..PmmP......M...",
+	"..PmmP......M...",
+	"..PmmP......M...",
+	"..PmmP......m...",
+	".PPPPPP.....mm..",
+	"................",
+]
+
+# Gargoyle — stone winged sentinel. Heavy, armored, flying.
+const GARGOYLE := [
+	"TT...........TT.",   # horn tips
+	"TTT.........TTT.",
+	"eTTT.......TTTe.",
+	"eTTTT.....TTTTe.",   # horns curving in
+	"eTTTTTT.TTTTTTe.",
+	".eTTKTTTTKTTTe..",   # glowing stone eyes
+	".eTTTTTTTTTTe...",
+	"..eTTKKKTTTe....",   # fanged mouth
+	"...eTTTTTe......",
+	"TeTTTTTTTTeT....",   # folded wings
+	"TTeeTTTTTeeTT...",
+	"TTT.eTTTTe.TTT..",
+	".TT..eTTTe..TT..",
+	"..T...eTe...T...",
+	"......KK........",
+	".....KKKK.......",
+]
+
+# Demon Lord — colossal winged horned tyrant. The finale boss.
+const DEMON_LORD := [
+	".RR..........RR.",   # great horns
+	"RRRR........RRRR",
+	"RRrR........RrRR",
+	"RRRRR......RRRRR",
+	"RrRRRoroorRRRrRR",   # brow + inner fire
+	"RRRRoFFFFoRRRR..",   # fire eyes
+	".RRRRooooRRRR...",   # snout
+	"..RRKKKKKKRR....",   # fanged maw
+	"...RRRRRRRR.....",
+	"RrRRRRRRRRRRRrR.",   # spread wings
+	"RRRRRRRRRRRRRRR.",
+	".RRRRRRRRRRRRR..",
+	"..rRRRRRRRRRr...",
+	"...RRRRRRRR.....",
+	"...KK......KK...",   # clawed legs
+	"..KKKK....KKKK..",
+]
+
 
 # ============================ DISPATCH ============================
 
@@ -738,6 +1002,12 @@ static func for_unit(unit_id: String) -> PackedStringArray:
 		&"crossbowman": return CROSSBOWMAN
 		&"frost_mage":  return FROST_MAGE
 		&"catapult":    return CATAPULT
+		&"cleric":      return CLERIC
+		&"paladin":     return PALADIN
+		&"bard":        return BARD
+		&"alchemist":   return ALCHEMIST
+		&"prince":      return PRINCE
+		&"princess":    return PRINCESS
 	return SOLDIER
 
 
@@ -805,6 +1075,13 @@ static func for_enemy(enemy_id: String) -> PackedStringArray:
 		&"hellhound":    return HELLHOUND
 		&"banshee":      return BANSHEE
 		&"hydra":        return HYDRA
+		&"vampire":      return VAMPIRE
+		&"zombie":       return ZOMBIE
+		&"mummy":        return MUMMY
+		&"orc":          return ORC
+		&"witch":        return WITCH
+		&"gargoyle":     return GARGOYLE
+		&"demon_lord":   return DEMON_LORD
 	return GOBLIN
 
 

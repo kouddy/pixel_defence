@@ -67,37 +67,44 @@ theme_override_font_sizes/font_size = 22
 anchor_top = 1.0
 anchor_bottom = 1.0
 anchor_right = 1.0
-offset_top = -80.0
+offset_top = -130.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTransparent_bot")
 
-[node name="Center" type="CenterContainer" parent="BottomBar"]
+# Build bar: a wrapping HFlowContainer so the tower roster (up to 13 on the
+# finale) wraps to a second row instead of overflowing off-screen. Replaces the
+# old single-row HBoxContainer; the bottom bar is taller to fit two rows.
+[node name="BuildContainer" type="HFlowContainer" parent="BottomBar"]
+unique_name_in_owner = true
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 10.0
+offset_right = -8.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+alignment = 1
 
-[node name="BuildContainer" type="HBoxContainer" parent="BottomBar/Center"]
+[node name="StartWaveButton" type="Button" parent="BottomBar/BuildContainer"]
 unique_name_in_owner = true
-theme_override_constants/separation = 12
-
-[node name="StartWaveButton" type="Button" parent="BottomBar/Center/BuildContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(160, 70)
+custom_minimum_size = Vector2(120, 54)
 text = "▶ Start Wave"
 
-[node name="PauseButton" type="Button" parent="BottomBar/Center/BuildContainer"]
+[node name="PauseButton" type="Button" parent="BottomBar/BuildContainer"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(100, 70)
+custom_minimum_size = Vector2(84, 54)
 text = "⏸ Pause"
 process_mode = 3
 
-[node name="SpeedButton" type="Button" parent="BottomBar/Center/BuildContainer"]
+[node name="SpeedButton" type="Button" parent="BottomBar/BuildContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(90, 70)
+custom_minimum_size = Vector2(76, 54)
 text = "▶ 1x"
 process_mode = 3
 
