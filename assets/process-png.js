@@ -7,7 +7,36 @@ const SOURCE_DIR = path.join(__dirname, 'source');
 const OUTPUT_DIR = __dirname;
 const TARGET_SIZE = 512;
 const WHITE_THRESHOLD = 245;
+// Tolerance for matching the sampled background colour. Some source art has an
+// opaque off-white fill (e.g. bowman at ~rgb(246,247,238)) whose channels dip
+// just under WHITE_THRESHOLD, so the pure-white test alone flags the whole
+// canvas as foreground and nothing gets cropped. We sample the corners and
+// treat any pixel within BG_TOLERANCE of that colour as background too.
+const BG_TOLERANCE = 12;
 const MIN_ARTIFACT_PIXELS = 100;
+
+function nearChannel(a, b) {
+  return Math.abs(a - b) <= BG_TOLERANCE;
+}
+
+// Build a background test for `data` (RGBA buffer, `width`x`height`) by sampling
+// the four corners. A pixel is background when it is transparent, near-white,
+// or close to the corner colour (the opaque off-white case above).
+function makeBackgroundTest(data, width, height) {
+  const cornerIdx = (x, y) => (y * width + x) * 4;
+  const corners = [
+    cornerIdx(0, 0),
+    cornerIdx(width - 1, 0),
+    cornerIdx(0, height - 1),
+    cornerIdx(width - 1, height - 1)
+  ].map(i => [data[i], data[i + 1], data[i + 2], data[i + 3]]);
+
+  return (r, g, b, a) => {
+    if (a === 0) return true;
+    if (r >= WHITE_THRESHOLD && g >= WHITE_THRESHOLD && b >= WHITE_THRESHOLD) return true;
+    return corners.some(c => nearChannel(r, c[0]) && nearChannel(g, c[1]) && nearChannel(b, c[2]));
+  };
+}
 
 function findLargestComponent(mask, width, height) {
   const visited = new Uint8Array(width * height);
@@ -83,12 +112,15 @@ async function processImage(filePath) {
       .raw()
       .toBuffer({ resolveWithObject: true });
 
+    const isBackground = makeBackgroundTest(data, width, height);
+
     const mask = new Uint8Array(width * height);
     for (let i = 0; i < mask.length; i++) {
       const r = data[i * 4];
       const g = data[i * 4 + 1];
       const b = data[i * 4 + 2];
-      mask[i] = (r < WHITE_THRESHOLD || g < WHITE_THRESHOLD || b < WHITE_THRESHOLD) ? 1 : 0;
+      const a = data[i * 4 + 3];
+      mask[i] = isBackground(r, g, b, a) ? 0 : 1;
     }
 
     const bounds = findLargestComponent(mask, width, height);
@@ -139,8 +171,12 @@ async function processImage(filePath) {
         const r = croppedBuffer.data[idx];
         const g = croppedBuffer.data[idx + 1];
         const b = croppedBuffer.data[idx + 2];
+        const a = croppedBuffer.data[idx + 3];
 
-        if (r < WHITE_THRESHOLD || g < WHITE_THRESHOLD || b < WHITE_THRESHOLD) {
+        // Reuse the same background test as the mask (corner colour + white +
+        // alpha). The background colour is unchanged by crop/resize, so the
+        // test built from the original image still applies here.
+        if (!isBackground(r, g, b, a)) {
           canvas[idx] = r;
           canvas[idx + 1] = g;
           canvas[idx + 2] = b;
