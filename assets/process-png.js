@@ -97,8 +97,14 @@ async function processImage(filePath) {
       return;
     }
 
-    const scale = TARGET_SIZE / bounds.h;
+    // Scale so the character's longer edge becomes TARGET_SIZE, preserving
+    // aspect ratio. The output is sized to the character itself (no padding to
+    // a square), so nothing is clipped and there are no empty margins. Using
+    // only the height (the old behaviour) overflowed horizontally for wide
+    // characters, producing a negative offset that clipped the left/right edges.
+    const scale = Math.min(TARGET_SIZE / bounds.w, TARGET_SIZE / bounds.h);
     const newW = Math.round(bounds.w * scale);
+    const newH = Math.round(bounds.h * scale);
 
     const croppedW = Math.min(bounds.w, width - bounds.x);
     const croppedH = Math.min(bounds.h, height - bounds.y);
@@ -112,7 +118,7 @@ async function processImage(filePath) {
       })
       .resize({
         width: newW,
-        height: TARGET_SIZE,
+        height: newH,
         fit: 'contain',
         kernel: 'nearest'
       })
@@ -123,34 +129,31 @@ async function processImage(filePath) {
     const resizedW = croppedBuffer.info.width;
     const resizedH = croppedBuffer.info.height;
 
-    const canvas = Buffer.alloc(TARGET_SIZE * TARGET_SIZE * 4, 0);
-
-    const offsetX = Math.floor((TARGET_SIZE - resizedW) / 2);
-    const offsetY = Math.floor((TARGET_SIZE - resizedH) / 2);
+    // Canvas is sized exactly to the resized character: no centre offset, no
+    // square padding, so no clipping and no empty margins.
+    const canvas = Buffer.alloc(resizedW * resizedH * 4, 0);
 
     for (let y = 0; y < resizedH; y++) {
       for (let x = 0; x < resizedW; x++) {
-        const srcIdx = (y * resizedW + x) * 4;
-        const dstIdx = ((y + offsetY) * TARGET_SIZE + (x + offsetX)) * 4;
-
-        const r = croppedBuffer.data[srcIdx];
-        const g = croppedBuffer.data[srcIdx + 1];
-        const b = croppedBuffer.data[srcIdx + 2];
+        const idx = (y * resizedW + x) * 4;
+        const r = croppedBuffer.data[idx];
+        const g = croppedBuffer.data[idx + 1];
+        const b = croppedBuffer.data[idx + 2];
 
         if (r < WHITE_THRESHOLD || g < WHITE_THRESHOLD || b < WHITE_THRESHOLD) {
-          canvas[dstIdx] = r;
-          canvas[dstIdx + 1] = g;
-          canvas[dstIdx + 2] = b;
-          canvas[dstIdx + 3] = 255;
+          canvas[idx] = r;
+          canvas[idx + 1] = g;
+          canvas[idx + 2] = b;
+          canvas[idx + 3] = 255;
         }
       }
     }
 
     await sharp(canvas, {
-      raw: { width: TARGET_SIZE, height: TARGET_SIZE, channels: 4 }
+      raw: { width: resizedW, height: resizedH, channels: 4 }
     }).png().toFile(outputPath);
 
-    console.log(`Processed: ${fileName} (char height: ${croppedH} -> ${TARGET_SIZE})`);
+    console.log(`Processed: ${fileName} (char: ${croppedW}x${croppedH} -> ${resizedW}x${resizedH})`);
   } catch (err) {
     console.error(`Error processing ${fileName}:`, err.message);
   }
@@ -162,7 +165,10 @@ async function main() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.png'));
+  // Process specific files if given as CLI args, otherwise the whole folder.
+  const files = process.argv.slice(2).length > 0
+    ? process.argv.slice(2)
+    : fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.png'));
 
   if (files.length === 0) {
     console.log('No PNG files found in source directory.');
