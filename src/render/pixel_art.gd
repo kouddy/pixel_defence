@@ -116,6 +116,39 @@ const WIZARD_TEX_BACK_ATTACK_PATH   := "res://assets/wizard_back_attack.svg"
 const WIZARD_TEX_SIDE_IDLE_PATH     := "res://assets/wizard_left_non_attack.svg"
 const WIZARD_TEX_SIDE_ATTACK_PATH   := "res://assets/wizard_left_attack.svg"
 
+# --- Crossbowman (detailed art shipped as bowman_*.svg) ---
+# The bow-themed SVG files are named "bowman_*"; they back the existing
+# "crossbowman" unit, upgrading it from ASCII to texture art.
+const CROSSBOWMAN_TEX_FRONT_IDLE_PATH    := "res://assets/bowman_front_non_attack.svg"
+const CROSSBOWMAN_TEX_FRONT_ATTACK_PATH  := "res://assets/bowman_front_attack.svg"
+const CROSSBOWMAN_TEX_BACK_IDLE_PATH     := "res://assets/bowman_back_non_attack.svg"
+const CROSSBOWMAN_TEX_BACK_ATTACK_PATH   := "res://assets/bowman_back_attack.svg"
+const CROSSBOWMAN_TEX_SIDE_IDLE_PATH     := "res://assets/bowman_left_non_attack.svg"
+const CROSSBOWMAN_TEX_SIDE_ATTACK_PATH   := "res://assets/bowman_left_attack.svg"
+
+# --- Cleric ---
+const CLERIC_TEX_FRONT_IDLE_PATH    := "res://assets/cleric_front_non_attack.svg"
+const CLERIC_TEX_FRONT_ATTACK_PATH  := "res://assets/cleric_front_attack.svg"
+const CLERIC_TEX_BACK_IDLE_PATH     := "res://assets/cleric_back_non_attack.svg"
+const CLERIC_TEX_BACK_ATTACK_PATH   := "res://assets/cleric_back_attack.svg"
+const CLERIC_TEX_SIDE_IDLE_PATH     := "res://assets/cleric_left_non_attack.svg"
+const CLERIC_TEX_SIDE_ATTACK_PATH   := "res://assets/cleric_left_attack.svg"
+
+# --- Bard ---
+const BARD_TEX_FRONT_IDLE_PATH    := "res://assets/bard_front_non_attack.svg"
+const BARD_TEX_FRONT_ATTACK_PATH  := "res://assets/bard_front_attack.svg"
+const BARD_TEX_BACK_IDLE_PATH     := "res://assets/bard_back_non_attack.svg"
+const BARD_TEX_BACK_ATTACK_PATH   := "res://assets/bard_back_attack.svg"
+const BARD_TEX_SIDE_IDLE_PATH     := "res://assets/bard_left_non_attack.svg"
+const BARD_TEX_SIDE_ATTACK_PATH   := "res://assets/bard_left_attack.svg"
+
+# --- Catapult (no back_attack art yet; BACK+attack falls back to BACK idle) ---
+const CATAPULT_TEX_FRONT_IDLE_PATH    := "res://assets/catapult_front_non_attack.svg"
+const CATAPULT_TEX_FRONT_ATTACK_PATH  := "res://assets/catapult_front_attack.svg"
+const CATAPULT_TEX_BACK_IDLE_PATH     := "res://assets/catapult_back_non_attack.svg"
+const CATAPULT_TEX_SIDE_IDLE_PATH     := "res://assets/catapult_left_non_attack.svg"
+const CATAPULT_TEX_SIDE_ATTACK_PATH   := "res://assets/catapult_left_attack.svg"
+
 # Side art faces LEFT, so the RIGHT facing needs a horizontal flip.
 #   facing LEFT  -> flip_h = false (art already faces left)
 #   facing RIGHT -> flip_h = true  (mirror the left-facing art)
@@ -177,10 +210,63 @@ static func _wizard_tex(facing: String, attacking: bool) -> Texture2D:
 	return load(WIZARD_TEX_FRONT_IDLE_PATH)
 
 
+## Returns the crossbowman texture for a (facing, stance) pair.
+## Art is the bowman_*.svg set (see constants above).
+static func _crossbowman_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(CROSSBOWMAN_TEX_FRONT_ATTACK_PATH if attacking else CROSSBOWMAN_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(CROSSBOWMAN_TEX_BACK_ATTACK_PATH if attacking else CROSSBOWMAN_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(CROSSBOWMAN_TEX_SIDE_ATTACK_PATH if attacking else CROSSBOWMAN_TEX_SIDE_IDLE_PATH)
+	return load(CROSSBOWMAN_TEX_FRONT_IDLE_PATH)
+
+
+## Returns the cleric texture for a (facing, stance) pair.
+static func _cleric_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(CLERIC_TEX_FRONT_ATTACK_PATH if attacking else CLERIC_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(CLERIC_TEX_BACK_ATTACK_PATH if attacking else CLERIC_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(CLERIC_TEX_SIDE_ATTACK_PATH if attacking else CLERIC_TEX_SIDE_IDLE_PATH)
+	return load(CLERIC_TEX_FRONT_IDLE_PATH)
+
+
+## Returns the bard texture for a (facing, stance) pair.
+static func _bard_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(BARD_TEX_FRONT_ATTACK_PATH if attacking else BARD_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(BARD_TEX_BACK_ATTACK_PATH if attacking else BARD_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(BARD_TEX_SIDE_ATTACK_PATH if attacking else BARD_TEX_SIDE_IDLE_PATH)
+	return load(BARD_TEX_FRONT_IDLE_PATH)
+
+
+## Returns the catapult texture for a (facing, stance) pair.
+## NOTE: there is no catapult_back_attack.svg yet, so the BACK-facing attack
+## pose reuses the BACK idle art until that frame is supplied.
+static func _catapult_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(CATAPULT_TEX_FRONT_ATTACK_PATH if attacking else CATAPULT_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			# No back-attack art: fall back to the idle back pose.
+			return load(CATAPULT_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(CATAPULT_TEX_SIDE_ATTACK_PATH if attacking else CATAPULT_TEX_SIDE_IDLE_PATH)
+	return load(CATAPULT_TEX_FRONT_IDLE_PATH)
+
+
 ## Whether a given unit should render via SVG textures (texture mode) rather
 ## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
-	return unit_id in [&"soldier", &"archer", &"knight", &"wizard"]
+	return unit_id in [&"soldier", &"archer", &"knight", &"wizard",
+		&"crossbowman", &"cleric", &"bard", &"catapult"]
 
 # ============================ DEFENDERS ============================
 
@@ -1096,10 +1182,11 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 	return for_unit(unit_id)
 
 
-## Directional + stance TEXTURE for a texture-art unit (currently the soldier).
+## Directional + stance TEXTURE for a texture-art unit (soldier, archer, knight,
+## wizard, crossbowman, cleric, bard, catapult).
 ## Returns the Texture2D to draw and, via the returned Dictionary, whether the
-## caller should mirror it horizontally (`flip_h`). For the soldier the side art
-## faces LEFT, so RIGHT is returned with flip_h = true.
+## caller should mirror it horizontally (`flip_h`). For all these units the side
+## art faces LEFT, so RIGHT is returned with flip_h = true.
 ##
 ## Only call this when has_texture_art(unit_id) is true; for other units use
 ## for_unit_dir() (ASCII grid).
@@ -1123,6 +1210,22 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 				flip = SIDE_FLIP_FOR_RIGHT
 		&"wizard":
 			tex = _wizard_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"crossbowman":
+			tex = _crossbowman_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"cleric":
+			tex = _cleric_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"bard":
+			tex = _bard_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"catapult":
+			tex = _catapult_tex(facing, attacking)
 			if facing == DIR_RIGHT:
 				flip = SIDE_FLIP_FOR_RIGHT
 		_:
