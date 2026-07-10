@@ -206,21 +206,26 @@ const Alchemist := {
 	&"can_hit_air": true,
 }
 
-# Prince: precise duelist. Fast, accurate single shots at priority targets,
-# hitting air — the upgrade path from Crossbowman into the late game.
+# Prince: a MOBILE royal. Unlike every other tower, the prince moves: it charges
+# toward enemies, firing its bow at range and switching to its sword (melee)
+# once adjacent. move_speed/melee_range_px/melee_damage drive that behaviour;
+# the bow is the primary attack_type. Returns to its home spot when idle.
 const Prince := {
 	&"id": &"prince",
 	&"display_name": "Prince",
-	&"description": "Royal marksman. Fast shots, hits air.",
+	&"description": "Mobile royal. Charges in to strike with its sword, looses arrows at range.",
 	&"color": Color(0.40, 0.55, 0.92),
 	&"radius": 20,
 	&"attack_type": UnitData.AttackType.PROJECTILE,
 	&"cost": 190,
-	&"damage": 24.0,
-	&"range_px": 100.0,
-	&"fire_rate": 1.2,
+	&"damage": 18.0,           # bow damage (ranged)
+	&"range_px": 110.0,        # bow range; also how far the prince can "see" to start chasing
+	&"fire_rate": 1.1,
 	&"projectile_speed": 520.0,
 	&"can_hit_air": true,
+	&"move_speed": 55.0,       # chase speed (px/s); enemies move ~45–70, so it keeps up
+	&"melee_range_px": 34.0,   # sword reach (~1 tile); within this it switches to the sword
+	&"melee_damage": 34.0,     # sword damage (melee), hits harder than the bow
 }
 
 # Princess: royal enchanter. Long-range bolts that slow on hit, striking air —

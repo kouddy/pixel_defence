@@ -156,6 +156,29 @@ const CATAPULT_TEX_BACK_IDLE_PATH     := "res://assets/catapult_back_non_attack.
 const CATAPULT_TEX_SIDE_IDLE_PATH     := "res://assets/catapult_left_non_attack.svg"
 const CATAPULT_TEX_SIDE_ATTACK_PATH   := "res://assets/catapult_left_attack.svg"
 
+# --- Prince (mobile dual-weapon unit) ---
+# Prince art has a WEAPON axis the other units don't: each facing/stance exists
+# in both a bow and a sword variant (prince_<dir>_<bow|sword>_<state>.svg). The
+# resolver below takes a `weapon` argument to pick the set. Side art faces LEFT,
+# same convention as the other units (RIGHT is flipped by the caller).
+const PRINCE_TEX_BOW_FRONT_IDLE_PATH    := "res://assets/prince_front_bow_non_attack.svg"
+const PRINCE_TEX_BOW_FRONT_ATTACK_PATH  := "res://assets/prince_front_bow_attack.svg"
+const PRINCE_TEX_BOW_BACK_IDLE_PATH     := "res://assets/prince_back_bow_non_attack.svg"
+const PRINCE_TEX_BOW_BACK_ATTACK_PATH   := "res://assets/prince_back_bow_attack.svg"
+const PRINCE_TEX_BOW_SIDE_IDLE_PATH     := "res://assets/prince_left_bow_non_attack.svg"
+const PRINCE_TEX_BOW_SIDE_ATTACK_PATH   := "res://assets/prince_left_bow_attack.svg"
+
+const PRINCE_TEX_SWORD_FRONT_IDLE_PATH    := "res://assets/prince_front_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_FRONT_ATTACK_PATH  := "res://assets/prince_front_sword_attack.svg"
+const PRINCE_TEX_SWORD_BACK_IDLE_PATH     := "res://assets/prince_back_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_BACK_ATTACK_PATH   := "res://assets/prince_back_sword_attack.svg"
+const PRINCE_TEX_SWORD_SIDE_IDLE_PATH     := "res://assets/prince_left_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_SIDE_ATTACK_PATH   := "res://assets/prince_left_sword_attack.svg"
+
+# Weapon names used as keys into the prince path set below.
+const WEAPON_BOW := "bow"
+const WEAPON_SWORD := "sword"
+
 # Side art faces LEFT, so the RIGHT facing needs a horizontal flip.
 #   facing LEFT  -> flip_h = false (art already faces left)
 #   facing RIGHT -> flip_h = true  (mirror the left-facing art)
@@ -281,11 +304,34 @@ static func _catapult_tex(facing: String, attacking: bool) -> Texture2D:
 	return load(CATAPULT_TEX_FRONT_IDLE_PATH)
 
 
+## Returns the prince texture for a (facing, weapon, stance) triple. The prince
+## is the only unit with a weapon axis: each facing/stance exists as both a bow
+## and a sword variant. `weapon` is one of WEAPON_BOW / WEAPON_SWORD. SIDE art
+## covers LEFT and RIGHT (RIGHT is flipped by the caller via SIDE_FLIP_FOR_RIGHT).
+static func _prince_tex(facing: String, weapon: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			if weapon == WEAPON_SWORD:
+				return load(PRINCE_TEX_SWORD_FRONT_ATTACK_PATH if attacking else PRINCE_TEX_SWORD_FRONT_IDLE_PATH)
+			return load(PRINCE_TEX_BOW_FRONT_ATTACK_PATH if attacking else PRINCE_TEX_BOW_FRONT_IDLE_PATH)
+		DIR_BACK:
+			if weapon == WEAPON_SWORD:
+				return load(PRINCE_TEX_SWORD_BACK_ATTACK_PATH if attacking else PRINCE_TEX_SWORD_BACK_IDLE_PATH)
+			return load(PRINCE_TEX_BOW_BACK_ATTACK_PATH if attacking else PRINCE_TEX_BOW_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			if weapon == WEAPON_SWORD:
+				return load(PRINCE_TEX_SWORD_SIDE_ATTACK_PATH if attacking else PRINCE_TEX_SWORD_SIDE_IDLE_PATH)
+			return load(PRINCE_TEX_BOW_SIDE_ATTACK_PATH if attacking else PRINCE_TEX_BOW_SIDE_IDLE_PATH)
+	# Unreachable: default to the bow front idle pose.
+	return load(PRINCE_TEX_BOW_FRONT_IDLE_PATH)
+
+
+
 ## Whether a given unit should render via SVG textures (texture mode) rather
 ## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
 	return unit_id in [&"soldier", &"archer", &"knight", &"wizard", &"frost_mage",
-		&"crossbowman", &"cleric", &"bard", &"catapult"]
+		&"crossbowman", &"cleric", &"bard", &"catapult", &"prince"]
 
 # ============================ DEFENDERS ============================
 
@@ -1208,7 +1254,12 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 ##
 ## Only call this when has_texture_art(unit_id) is true; for other units use
 ## for_unit_dir() (ASCII grid).
-static func for_unit_dir_texture(unit_id: String, facing: String, attacking: bool) -> Dictionary:
+##
+## `weapon` is only read for the prince (the sole unit with a weapon axis: bow
+## vs sword). It defaults to WEAPON_BOW and is ignored by every other unit, so
+## existing callers are unaffected.
+static func for_unit_dir_texture(unit_id: String, facing: String, attacking: bool,
+		weapon: String = WEAPON_BOW) -> Dictionary:
 	# Default: no horizontal flip (front/back/left art is drawn as-is).
 	var flip := false
 	var tex: Texture2D
@@ -1250,6 +1301,10 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 			tex = _catapult_tex(facing, attacking)
 			if facing == DIR_RIGHT:
 				flip = SIDE_FLIP_FOR_RIGHT
+		&"prince":
+			tex = _prince_tex(facing, weapon, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
 		_:
 			tex = SOLDIER_TEX_FRONT_IDLE
 
@@ -1258,6 +1313,7 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 		&"flip_h": flip,
 		&"size": SOLDIER_DRAW_SIZE,
 	}
+
 
 
 static func for_enemy(enemy_id: String) -> PackedStringArray:

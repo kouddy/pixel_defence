@@ -31,6 +31,19 @@ var _applied_attacking: bool = false
 var _current_target: Node2D = null       # last acquired target, for facing each frame
 const ATTACK_POSE_MS := 130.0           # how long the attack stance shows per shot
 
+# Mobile-tower state (only the prince uses this; every other tower has
+# move_speed == 0 and these stay inert). `_weapon` selects bow vs sword art and
+# which attack fires; it's driven by distance to the current target. `_home_pos`
+# is where the prince was placed — it returns there when no enemies remain.
+# `home_tile` is read by Main to free the reserved tile on sell (a roamed prince
+# is no longer standing on its original tile).
+var _weapon: String = PixelArt.WEAPON_BOW
+var _applied_weapon: String = ""
+var _home_pos: Vector2 = Vector2.ZERO
+var home_tile: Vector2i = Vector2i(-1, -1)
+# Playfield bounds for clamping a mobile tower (matches GameWorld's 32×18 @ 26px).
+const PLAYFIELD_SIZE := Vector2(832.0, 468.0)
+
 # Upgrade state.
 var level: int = 0                       # 0 = base, up to Upgrades.MAX_LEVEL
 var invested_gold: int = 0               # total gold sunk into this tower
@@ -54,6 +67,7 @@ func _apply_data() -> void:
 		_apply_sprite()
 		_applied_facing = _facing
 		_applied_attacking = _attacking
+		_applied_weapon = _weapon
 	# Range preview rect sized to range.
 	if range_visual:
 		var rs := data.range_px * 2
@@ -68,6 +82,10 @@ func configure(unit_data: UnitData) -> void:
 	if _base == null:
 		_base = unit_data.duplicate()
 		invested_gold = unit_data.cost
+	# Record the placement position so a mobile tower can return home when idle
+	# and Main can free the correct (home) tile on sell.
+	if _home_pos == Vector2.ZERO and is_inside_tree():
+		_home_pos = global_position
 	if is_inside_tree():
 		_apply_data()
 
@@ -148,6 +166,9 @@ func _recompute_stats() -> void:
 	d.range_px = _base.range_px * range_mult
 	d.fire_rate = _base.fire_rate * rate_mult
 	d.splash_radius = _base.splash_radius * splash_mult
+	# The prince's sword shares the damage upgrade path with its bow so upgrades
+	# improve both weapons together.
+	d.melee_damage = _base.melee_damage * dmg_mult
 	data = d
 	_apply_data()
 
@@ -176,6 +197,13 @@ func _process(dt: float) -> void:
 	if sprite:
 		var t := Time.get_ticks_msec() * 0.0015 + _sway_phase
 		sprite.rotation = sin(t) * 0.04
+
+	# Mobile towers (only the prince; move_speed == 0 for everyone else) chase
+	# enemies and switch weapons by range. This block does the movement, target
+	# tracking, and weapon selection BEFORE the shared firing logic below.
+	if data and data.move_speed > 0.0:
+		_process_mobile(dt)
+
 	# Keep facing whatever we're currently shooting at. The target is only
 	# refreshed when a shot fires (below), so this is O(1) per frame — it does
 	# not scan all enemies. If the target is gone/out of range we hold the last
@@ -193,6 +221,50 @@ func _process(dt: float) -> void:
 	if target == null:
 		return
 	_fire(target)
+
+
+## Per-frame behaviour for mobile towers (the prince). Acquires a target using
+## the bow range so the prince starts chasing from afar, selects sword/bow based
+## on distance, moves toward the target (stopping within sword reach), and
+## returns home when nothing is in range. Static towers never call this.
+func _process_mobile(dt: float) -> void:
+	# Find something to chase. We scan against the bow range (data.range_px) so
+	# the prince notices enemies from afar and closes in; the shared _fire()
+	# below still uses the same range for the bow shot.
+	var target := _acquire_target()
+	if target != null:
+		_current_target = target
+		var dist := global_position.distance_to(target.global_position)
+		# Sword when adjacent, bow otherwise. Drives both the sprite and the fire path.
+		_weapon = PixelArt.WEAPON_SWORD if dist <= data.melee_range_px else PixelArt.WEAPON_BOW
+		# Advance until we're within sword reach; face the target as we move.
+		if dist > data.melee_range_px:
+			_move_toward(target.global_position, dt)
+		_facing = _facing_to(target.global_position)
+	else:
+		# Nothing in range — return to the placement spot so the prince doesn't
+		# wander off forever. Pick up the bow again for the journey home.
+		_weapon = PixelArt.WEAPON_BOW
+		var hd := global_position.distance_to(_home_pos)
+		if hd > 1.0:
+			_move_toward(_home_pos, dt)
+			_facing = _facing_to(_home_pos)
+
+
+## Step `move_speed * dt` toward `dest`, clamped to the playfield. Mutates
+## global_position directly (the tower is a bare Node2D; there's no physics body
+## or collision to drive movement through).
+func _move_toward(dest: Vector2, dt: float) -> void:
+	var delta: Vector2 = dest - global_position
+	var step := data.move_speed * dt
+	if delta.length_squared() <= step * step:
+		global_position = dest
+	else:
+		global_position += delta.normalized() * step
+	# Keep the prince on the map.
+	global_position.x = clampf(global_position.x, 0.0, PLAYFIELD_SIZE.x)
+	global_position.y = clampf(global_position.y, 0.0, PLAYFIELD_SIZE.y)
+
 
 
 func _acquire_target() -> Node2D:
@@ -249,6 +321,14 @@ func _fire(target: Node2D) -> void:
 	_attacking = true
 	_attack_pose_until = Time.get_ticks_msec() + ATTACK_POSE_MS
 	_refresh_sprite()
+	# The prince's sword overrides its bow attack_type: when adjacent it does a
+	# melee hit for melee_damage regardless of the (bow) PROJECTILE attack_type.
+	# Every other tower has _weapon == WEAPON_BOW and falls through to the normal
+	# attack_type dispatch below.
+	if _weapon == PixelArt.WEAPON_SWORD:
+		_apply_damage([target], data.melee_damage)
+		_play_melee_fx(target)
+		return
 	match data.attack_type:
 		UnitData.AttackType.MELEE:
 			_apply_damage([target])
@@ -273,25 +353,27 @@ func _facing_to(target_pos: Vector2) -> String:
 	return PixelArt.DIR_LEFT if d.x < 0.0 else PixelArt.DIR_RIGHT
 
 
-## Reconfigure the sprite only when facing or stance actually changed since the
-## last frame. Cheap guard so we don't redraw the ASCII grid 60 times/sec.
+## Reconfigure the sprite only when facing/stance/weapon actually changed since
+## the last frame. Cheap guard so we don't redraw the ASCII grid 60 times/sec.
 func _refresh_sprite() -> void:
-	if _facing == _applied_facing and _attacking == _applied_attacking:
+	if _facing == _applied_facing and _attacking == _applied_attacking and _weapon == _applied_weapon:
 		return
 	if sprite and sprite is PixelSprite:
 		_apply_sprite()
 	_applied_facing = _facing
 	_applied_attacking = _attacking
+	_applied_weapon = _weapon
 
 
-## Push the current (facing, stance) to the sprite. Units with SVG art (the
-## soldier) render via a texture; everything else uses the ASCII grid. The flip
-## convention differs: side art faces LEFT for the soldier (RIGHT is mirrored),
-## while the ASCII side grids face RIGHT (LEFT is mirrored) — so the flip flag is
-## taken from the chosen art source rather than inferred here.
+## Push the current (facing, stance, weapon) to the sprite. Units with SVG art
+## render via a texture; everything else uses the ASCII grid. The flip convention
+## differs: side art faces LEFT for the texture units (RIGHT is mirrored), while
+## the ASCII side grids face RIGHT (LEFT is mirrored) — so the flip flag is taken
+## from the chosen art source rather than inferred here. The prince is the only
+## unit that passes a weapon (bow/sword); others ignore it.
 func _apply_sprite() -> void:
 	if PixelArt.has_texture_art(data.id):
-		var t: Dictionary = PixelArt.for_unit_dir_texture(data.id, _facing, _attacking)
+		var t: Dictionary = PixelArt.for_unit_dir_texture(data.id, _facing, _attacking, _weapon)
 		sprite.set_flip_h(t[&"flip_h"])
 		sprite.configure_texture(t[&"texture"], t[&"size"])
 	else:
@@ -346,10 +428,13 @@ func _spawn_projectile(target: Node2D, splash: bool = false) -> void:
 		tw.tween_property(sprite, "position", orig, 0.12)
 
 
-func _apply_damage(targets: Array) -> void:
+func _apply_damage(targets: Array, amount_override: float = -1.0) -> void:
+	# amount_override lets the prince's sword hit for melee_damage (separate from
+	# its bow data.damage). -1.0 = use the tower's standard damage.
+	var amt: float = amount_override if amount_override >= 0.0 else data.damage
 	for t in targets:
 		if is_instance_valid(t) and t.has_method("take_damage"):
-			t.take_damage(data.damage)
+			t.take_damage(amt)
 			if data.slows_on_hit and t.has_method("apply_slow"):
 				t.apply_slow(data.slow_factor, data.slow_duration)
 

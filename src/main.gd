@@ -158,9 +158,15 @@ func _on_sell_requested() -> void:
 	FX.flash_at(_selected_tower.global_position, Color(1.0, 0.92, 0.45), 20.0)
 	FX.ring(_selected_tower.global_position, Color(1.0, 0.85, 0.35), 36.0)
 	SFX.place()
-	# Free the tile and remove the tower, then close the panel.
-	var tile: Vector2i = world.world_to_tile(_selected_tower.global_position)
-	world.occupied.erase(tile)
+	# Free the tile and remove the tower, then close the panel. Use the tower's
+	# home tile — the mobile prince may have walked off its placement tile, in
+	# which case freeing the tile it's currently standing on would wrongly clear
+	# the path or another tower's reserved spot.
+	var tile: Vector2i = _selected_tower.home_tile
+	if tile.x >= 0:
+		world.occupied.erase(tile)
+	else:
+		world.occupied.erase(world.world_to_tile(_selected_tower.global_position))
 	var sold := _selected_tower
 	_deselect_tower()
 	sold.queue_free()
@@ -179,6 +185,9 @@ func _try_place(pos: Vector2) -> void:
 	towers_node.add_child(tower)
 	tower.global_position = world.snapped_center(pos)
 	tower.configure(_build_data.duplicate())
+	# Record the placement tile on the tower so selling frees the original spot
+	# even for the mobile prince, which may have roamed onto another tile.
+	tower.home_tile = world.world_to_tile(pos)
 	world.occupy(pos)
 	# Placement pop: flash + ring so building feels responsive, not silent.
 	FX.flash_at(tower.global_position, _build_data.color, 18.0)

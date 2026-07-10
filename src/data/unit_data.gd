@@ -21,3 +21,11 @@ enum AttackType { MELEE, PROJECTILE, SPLASH }
 @export var slows_on_hit: bool = false
 @export var slow_factor: float = 0.5
 @export var slow_duration: float = 1.0
+
+# Mobile-tower fields. Zero means static (every tower except the prince), so
+# these are inert by default and the existing towers are unchanged. The prince
+# sets move_speed > 0 to chase enemies, melee_range_px as its sword reach, and
+# melee_damage as the sword's hit (separate from the ranged `damage`/bow).
+@export var move_speed: float = 0.0
+@export var melee_range_px: float = 0.0
+@export var melee_damage: float = 0.0
