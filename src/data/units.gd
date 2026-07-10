@@ -50,6 +50,22 @@ const Knight := {
 	&"slow_duration": 1.2,
 }
 
+const Wizard := {
+	&"id": &"wizard",
+	&"display_name": "Wizard",
+	&"description": "AoE splash damage. Burns groups.",
+	&"color": Color(0.70, 0.40, 0.90),
+	&"radius": 22,
+	&"attack_type": UnitData.AttackType.SPLASH,
+	&"cost": 150,
+	&"damage": 22.0,
+	&"range_px": 128.0,
+	&"fire_rate": 0.7,
+	&"splash_radius": 48.0,
+	&"projectile_speed": 280.0,
+	&"can_hit_air": true,
+}
+
 # --- Towers unlocked via story progression (see levels.gd) ---
 
 # Crossbowman: single-target burst DPS. Higher fire rate than Archer at slightly
@@ -69,8 +85,9 @@ const Crossbowman := {
 	&"can_hit_air": true,
 }
 
-# Frost Mage: AoE + slow. Splash that applies the Knight's slow flag to every
-# enemy inside the splash radius. Its value is lock-down, not burst.
+# Frost Mage: AoE + slow. Splash like Wizard but applies the Knight's slow flag
+# to every enemy inside the splash radius. Lower damage than Wizard; its value
+# is lock-down, not burst.
 const FrostMage := {
 	&"id": &"frost_mage",
 	&"display_name": "Frost Mage",
@@ -226,7 +243,7 @@ const Princess := {
 	&"slow_duration": 1.0,
 }
 
-const ALL := [Soldier, Archer, Knight, Crossbowman, FrostMage, Catapult,
+const ALL := [Soldier, Archer, Knight, Wizard, Crossbowman, FrostMage, Catapult,
 	Cleric, Paladin, Bard, Alchemist, Prince, Princess]
 
 

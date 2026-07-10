@@ -109,6 +109,13 @@ const KNIGHT_TEX_BACK_ATTACK_PATH   := "res://assets/knight_back_attack.svg"
 const KNIGHT_TEX_SIDE_IDLE_PATH     := "res://assets/knight_left_non_attack.svg"
 const KNIGHT_TEX_SIDE_ATTACK_PATH   := "res://assets/knight_left_attack.svg"
 
+const WIZARD_TEX_FRONT_IDLE_PATH    := "res://assets/wizard_front_non_attack.svg"
+const WIZARD_TEX_FRONT_ATTACK_PATH  := "res://assets/wizard_front_attack.svg"
+const WIZARD_TEX_BACK_IDLE_PATH     := "res://assets/wizard_back_non_attack.svg"
+const WIZARD_TEX_BACK_ATTACK_PATH   := "res://assets/wizard_back_attack.svg"
+const WIZARD_TEX_SIDE_IDLE_PATH     := "res://assets/wizard_left_non_attack.svg"
+const WIZARD_TEX_SIDE_ATTACK_PATH   := "res://assets/wizard_left_attack.svg"
+
 const FROST_MAGE_TEX_FRONT_IDLE_PATH    := "res://assets/frost_mage_front_non_attack.svg"
 const FROST_MAGE_TEX_FRONT_ATTACK_PATH  := "res://assets/frost_mage_front_attack.svg"
 const FROST_MAGE_TEX_BACK_IDLE_PATH     := "res://assets/frost_mage_back_non_attack.svg"
@@ -198,6 +205,18 @@ static func _knight_tex(facing: String, attacking: bool) -> Texture2D:
 	return load(KNIGHT_TEX_FRONT_IDLE_PATH)
 
 
+## Returns the wizard texture for a (facing, stance) pair.
+static func _wizard_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(WIZARD_TEX_FRONT_ATTACK_PATH if attacking else WIZARD_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(WIZARD_TEX_BACK_ATTACK_PATH if attacking else WIZARD_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(WIZARD_TEX_SIDE_ATTACK_PATH if attacking else WIZARD_TEX_SIDE_IDLE_PATH)
+	return load(WIZARD_TEX_FRONT_IDLE_PATH)
+
+
 ## Returns the frost mage texture for a (facing, stance) pair.
 static func _frost_mage_tex(facing: String, attacking: bool) -> Texture2D:
 	match facing:
@@ -265,7 +284,7 @@ static func _catapult_tex(facing: String, attacking: bool) -> Texture2D:
 ## Whether a given unit should render via SVG textures (texture mode) rather
 ## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
-	return unit_id in [&"soldier", &"archer", &"knight", &"frost_mage",
+	return unit_id in [&"soldier", &"archer", &"knight", &"wizard", &"frost_mage",
 		&"crossbowman", &"cleric", &"bard", &"catapult"]
 
 # ============================ DEFENDERS ============================
@@ -714,6 +733,25 @@ const CROSSBOWMAN := [
 	"................",
 ]
 
+const WIZARD := [
+	"................",
+	".......z........",   # hat star tip
+	"......pz........",
+	".....ppu........",   # purple hat
+	"....pppu........",
+	"...ppppp........",   # swept hat
+	"..PPPPPPP.......",   # brim
+	"..PnnnnnP.......",   # hair
+	"..PnSSSnP...z...",   # face + staff orb
+	"..PnwwwwP...Y...",   # beard + staff shaft
+	"..PnwwwwP...Y...",
+	"...PnwwnP...Y...",
+	"...PnnnnP...m...",   # staff base
+	"...PPmmPP...m...",   # robe
+	"....KmmmmK......",
+	"....Km..mK......",
+]
+
 const FROST_MAGE := [
 	"................",
 	"......b.........",   # frost crystal tip
@@ -1122,6 +1160,7 @@ static func for_unit(unit_id: String) -> PackedStringArray:
 		&"soldier":     return SOLDIER
 		&"archer":      return ARCHER
 		&"knight":      return KNIGHT
+		&"wizard":      return WIZARD
 		&"frost_mage":  return FROST_MAGE
 		&"catapult":    return CATAPULT
 		&"cleric":      return CLERIC
@@ -1162,7 +1201,7 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 
 
 ## Directional + stance TEXTURE for a texture-art unit (soldier, archer, knight,
-## frost mage, crossbowman, cleric, bard, catapult).
+## wizard, frost mage, crossbowman, cleric, bard, catapult).
 ## Returns the Texture2D to draw and, via the returned Dictionary, whether the
 ## caller should mirror it horizontally (`flip_h`). For all these units the side
 ## art faces LEFT, so RIGHT is returned with flip_h = true.
@@ -1185,6 +1224,10 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 				flip = SIDE_FLIP_FOR_RIGHT
 		&"knight":
 			tex = _knight_tex(facing, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"wizard":
+			tex = _wizard_tex(facing, attacking)
 			if facing == DIR_RIGHT:
 				flip = SIDE_FLIP_FOR_RIGHT
 		&"frost_mage":

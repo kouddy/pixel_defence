@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://w5f6g7h8jaj0"
-path="res://.godot/imported/frost_mage_left_non_attack.svg-069da22662fbe541d06295e19a7fe6e1.ctex"
+uid="uid://p8e2yrfaalpn"
+path="res://.godot/imported/wizard_left_non_attack.svg-6fe1ac3f000d426a8615de2c974ecadb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/frost_mage_left_non_attack.svg"
-dest_files=["res://.godot/imported/frost_mage_left_non_attack.svg-069da22662fbe541d06295e19a7fe6e1.ctex"]
+source_file="res://assets/wizard_left_non_attack.svg"
+dest_files=["res://.godot/imported/wizard_left_non_attack.svg-6fe1ac3f000d426a8615de2c974ecadb.ctex"]
 
 [params]
 
