@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://062427bab3a7"
-path="res://.godot/imported/catapult_left_attack.svg-06242699b3a7228e0bdfa48aee2bbd36.ctex"
+path="res://.godot/imported/catapult_left_attack.svg-63874dc38d256060ebe75b799f452730.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/catapult_left_attack.svg"
-dest_files=["res://.godot/imported/catapult_left_attack.svg-06242699b3a7228e0bdfa48aee2bbd36.ctex"]
+dest_files=["res://.godot/imported/catapult_left_attack.svg-63874dc38d256060ebe75b799f452730.ctex"]
 
 [params]
 

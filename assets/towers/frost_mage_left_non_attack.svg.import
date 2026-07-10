@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://w5f6g7h8jaj0"
-path="res://.godot/imported/frost_mage_left_non_attack.svg-069da22662fbe541d06295e19a7fe6e1.ctex"
+path="res://.godot/imported/frost_mage_left_non_attack.svg-d4da09846cbf931c4397b59b8d032b3d.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/frost_mage_left_non_attack.svg"
-dest_files=["res://.godot/imported/frost_mage_left_non_attack.svg-069da22662fbe541d06295e19a7fe6e1.ctex"]
+dest_files=["res://.godot/imported/frost_mage_left_non_attack.svg-d4da09846cbf931c4397b59b8d032b3d.ctex"]
 
 [params]
 

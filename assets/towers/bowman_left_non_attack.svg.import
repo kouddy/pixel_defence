@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d064453c175c"
-path="res://.godot/imported/bowman_left_non_attack.svg-d064453c175ce149d0848d711b64551d.ctex"
+path="res://.godot/imported/bowman_left_non_attack.svg-96099d110442196e0987e62a28c0b476.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/bowman_left_non_attack.svg"
-dest_files=["res://.godot/imported/bowman_left_non_attack.svg-d064453c175ce149d0848d711b64551d.ctex"]
+dest_files=["res://.godot/imported/bowman_left_non_attack.svg-96099d110442196e0987e62a28c0b476.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2fy7jrvol3tg"
-path="res://.godot/imported/archer_left_non_attack.svg-54004d5c3da65105c31252df4614559d.ctex"
+path="res://.godot/imported/archer_left_non_attack.svg-508fe0ccfbfe0480205f05e1a4698b4f.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/archer_left_non_attack.svg"
-dest_files=["res://.godot/imported/archer_left_non_attack.svg-54004d5c3da65105c31252df4614559d.ctex"]
+dest_files=["res://.godot/imported/archer_left_non_attack.svg-508fe0ccfbfe0480205f05e1a4698b4f.ctex"]
 
 [params]
 

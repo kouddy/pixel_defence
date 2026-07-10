@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8047c344e002"
-path="res://.godot/imported/cleric_front_attack.svg-8047c344e002fe6d77dd1d01ebfcc263.ctex"
+path="res://.godot/imported/cleric_front_attack.svg-98356c45e7f037366f84537c0c23c748.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/cleric_front_attack.svg"
-dest_files=["res://.godot/imported/cleric_front_attack.svg-8047c344e002fe6d77dd1d01ebfcc263.ctex"]
+dest_files=["res://.godot/imported/cleric_front_attack.svg-98356c45e7f037366f84537c0c23c748.ctex"]
 
 [params]
 

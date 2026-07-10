@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ba664bbdf24aa"
-path="res://.godot/imported/catapult_back_non_attack.svg-9664bbdf24aaf1e8ee747222c2753fbc.ctex"
+path="res://.godot/imported/catapult_back_non_attack.svg-df786a96a9903faaf86711a91f8d7a2b.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/catapult_back_non_attack.svg"
-dest_files=["res://.godot/imported/catapult_back_non_attack.svg-9664bbdf24aaf1e8ee747222c2753fbc.ctex"]
+dest_files=["res://.godot/imported/catapult_back_non_attack.svg-df786a96a9903faaf86711a91f8d7a2b.ctex"]
 
 [params]
 

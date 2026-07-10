@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://f55cd026d0a2"
-path="res://.godot/imported/bard_left_attack.svg-f55cd026d0a2efe3dc741d52d3ba1cc0.ctex"
+path="res://.godot/imported/bard_left_attack.svg-b6fae91246db886d2f1db752f78ed727.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/bard_left_attack.svg"
-dest_files=["res://.godot/imported/bard_left_attack.svg-f55cd026d0a2efe3dc741d52d3ba1cc0.ctex"]
+dest_files=["res://.godot/imported/bard_left_attack.svg-b6fae91246db886d2f1db752f78ed727.ctex"]
 
 [params]
 

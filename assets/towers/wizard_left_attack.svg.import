@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d8ekffupuqvy"
-path="res://.godot/imported/wizard_left_attack.svg-97a8a8e8ddd367e7af56d81902caf167.ctex"
+path="res://.godot/imported/wizard_left_attack.svg-0a3c59d19ed7c70445f6fdb38ae723c4.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/wizard_left_attack.svg"
-dest_files=["res://.godot/imported/wizard_left_attack.svg-97a8a8e8ddd367e7af56d81902caf167.ctex"]
+dest_files=["res://.godot/imported/wizard_left_attack.svg-0a3c59d19ed7c70445f6fdb38ae723c4.ctex"]
 
 [params]
 

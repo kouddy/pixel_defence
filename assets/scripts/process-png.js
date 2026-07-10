@@ -3,8 +3,11 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const SOURCE_DIR = path.join(__dirname, '..', 'source');
-const OUTPUT_DIR = path.join(__dirname, '..');
+// Resolve relative to the working directory so the script can be run from
+// inside assets/towers/ (reads assets/towers/source/, writes assets/towers/)
+// or assets/enemies/. Run as: `cd assets/towers && node ../scripts/process-png.js`.
+const SOURCE_DIR = path.join(process.cwd(), 'source');
+const OUTPUT_DIR = process.cwd();
 const TARGET_SIZE = 512;
 const WHITE_THRESHOLD = 245;
 // Tolerance for matching the sampled background colour. Some source art has an

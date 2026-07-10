@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bssaffv7rw1eu"
-path="res://.godot/imported/soldier_front_non_attack.svg-3552a00534f37ce95280ca4e4d2d0440.ctex"
+path="res://.godot/imported/soldier_front_non_attack.svg-14cbd28b4d9b4c9eaa18fa7717c7e889.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/soldier_front_non_attack.svg"
-dest_files=["res://.godot/imported/soldier_front_non_attack.svg-3552a00534f37ce95280ca4e4d2d0440.ctex"]
+dest_files=["res://.godot/imported/soldier_front_non_attack.svg-14cbd28b4d9b4c9eaa18fa7717c7e889.ctex"]
 
 [params]
 

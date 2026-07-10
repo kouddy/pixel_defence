@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dybu7mp5qlioq"
-path="res://.godot/imported/prince_front_sword_attack.svg-0680d8c5406940c13c136b5ee4fcc12e.ctex"
+path="res://.godot/imported/prince_front_sword_attack.svg-b771fcc1371b6584e6a4a808ecfdc287.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/towers/prince_front_sword_attack.svg"
-dest_files=["res://.godot/imported/prince_front_sword_attack.svg-0680d8c5406940c13c136b5ee4fcc12e.ctex"]
+dest_files=["res://.godot/imported/prince_front_sword_attack.svg-b771fcc1371b6584e6a4a808ecfdc287.ctex"]
 
 [params]
 

@@ -175,6 +175,16 @@ const PRINCE_TEX_SWORD_BACK_ATTACK_PATH   := "res://assets/towers/prince_back_sw
 const PRINCE_TEX_SWORD_SIDE_IDLE_PATH     := "res://assets/towers/prince_left_sword_non_attack.svg"
 const PRINCE_TEX_SWORD_SIDE_ATTACK_PATH   := "res://assets/towers/prince_left_sword_attack.svg"
 
+# --- Princess (ranged projectile unit, no weapon axis) ---
+# One sprite per facing/stance, same naming convention as the archer/knight
+# (princess_<dir>_<state>.svg). Side art faces LEFT; RIGHT is flipped by the caller.
+const PRINCESS_TEX_FRONT_IDLE_PATH    := "res://assets/towers/princess_front_non_attack.svg"
+const PRINCESS_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/princess_front_attack.svg"
+const PRINCESS_TEX_BACK_IDLE_PATH     := "res://assets/towers/princess_back_non_attack.svg"
+const PRINCESS_TEX_BACK_ATTACK_PATH   := "res://assets/towers/princess_back_attack.svg"
+const PRINCESS_TEX_SIDE_IDLE_PATH     := "res://assets/towers/princess_left_non_attack.svg"
+const PRINCESS_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/princess_left_attack.svg"
+
 # Weapon names used as keys into the prince path set below.
 const WEAPON_BOW := "bow"
 const WEAPON_SWORD := "sword"
@@ -326,12 +336,26 @@ static func _prince_tex(facing: String, weapon: String, attacking: bool) -> Text
 	return load(PRINCE_TEX_BOW_FRONT_IDLE_PATH)
 
 
+## Returns the princess texture for a (facing, stance) pair. Like the archer /
+## knight, the princess has no weapon axis — one sprite per facing/stance. SIDE
+## art covers LEFT and RIGHT (RIGHT is flipped by the caller).
+static func _princess_tex(facing: String, attacking: bool) -> Texture2D:
+	match facing:
+		DIR_FRONT:
+			return load(PRINCESS_TEX_FRONT_ATTACK_PATH if attacking else PRINCESS_TEX_FRONT_IDLE_PATH)
+		DIR_BACK:
+			return load(PRINCESS_TEX_BACK_ATTACK_PATH if attacking else PRINCESS_TEX_BACK_IDLE_PATH)
+		DIR_LEFT, DIR_RIGHT:
+			return load(PRINCESS_TEX_SIDE_ATTACK_PATH if attacking else PRINCESS_TEX_SIDE_IDLE_PATH)
+	return load(PRINCESS_TEX_FRONT_IDLE_PATH)
+
+
 
 ## Whether a given unit should render via SVG textures (texture mode) rather
 ## than the ASCII grid.
 static func has_texture_art(unit_id: String) -> bool:
 	return unit_id in [&"soldier", &"archer", &"knight", &"wizard", &"frost_mage",
-		&"crossbowman", &"cleric", &"bard", &"catapult", &"prince"]
+		&"crossbowman", &"cleric", &"bard", &"catapult", &"prince", &"princess"]
 
 # ============================ DEFENDERS ============================
 
@@ -1247,7 +1271,7 @@ static func for_unit_dir(unit_id: String, facing: String, attacking: bool) -> Pa
 
 
 ## Directional + stance TEXTURE for a texture-art unit (soldier, archer, knight,
-## wizard, frost mage, crossbowman, cleric, bard, catapult).
+## wizard, frost mage, crossbowman, cleric, bard, catapult, prince, princess).
 ## Returns the Texture2D to draw and, via the returned Dictionary, whether the
 ## caller should mirror it horizontally (`flip_h`). For all these units the side
 ## art faces LEFT, so RIGHT is returned with flip_h = true.
@@ -1303,6 +1327,10 @@ static func for_unit_dir_texture(unit_id: String, facing: String, attacking: boo
 				flip = SIDE_FLIP_FOR_RIGHT
 		&"prince":
 			tex = _prince_tex(facing, weapon, attacking)
+			if facing == DIR_RIGHT:
+				flip = SIDE_FLIP_FOR_RIGHT
+		&"princess":
+			tex = _princess_tex(facing, attacking)
 			if facing == DIR_RIGHT:
 				flip = SIDE_FLIP_FOR_RIGHT
 		_:
