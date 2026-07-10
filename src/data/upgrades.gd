@@ -34,12 +34,6 @@ const TIERS := {
 		{ &"cost": 160, &"damage": 1.8, &"range": 1.15, &"fire_rate": 1.30, &"splash": 1.0,
 		  &"note": "Champion: deep slow, crushing damage." },
 	],
-	&"wizard": [
-		{ &"cost": 110, &"damage": 1.7, &"range": 1.20, &"fire_rate": 1.15, &"splash": 1.35,
-		  &"note": "Wider explosions, hotter flame." },
-		{ &"cost": 220, &"damage": 1.8, &"range": 1.20, &"fire_rate": 1.25, &"splash": 1.40,
-		  &"note": "Archmage: massive blasts, fast casting." },
-	],
 	# --- Towers unlocked via story progression ---
 	&"crossbowman": [
 		{ &"cost": 70,  &"damage": 1.7, &"range": 1.15, &"fire_rate": 1.30, &"splash": 1.0,

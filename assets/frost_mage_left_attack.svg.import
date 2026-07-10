@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://w2c3d4e5f6g7"
-path="res://.godot/imported/wizard_front_attack.svg-e8f47573cf9b60b9e2973b67af6caade.ctex"
+uid="uid://w4e5f6g7h8ja"
+path="res://.godot/imported/wizard_left_attack.svg-97a8a8e8ddd367e7af56d81902caf167.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/wizard_front_attack.svg"
-dest_files=["res://.godot/imported/wizard_front_attack.svg-e8f47573cf9b60b9e2973b67af6caade.ctex"]
+source_file="res://assets/frost_mage_left_attack.svg"
+dest_files=["res://.godot/imported/wizard_left_attack.svg-97a8a8e8ddd367e7af56d81902caf167.ctex"]
 
 [params]
 

@@ -10,7 +10,7 @@ metadata={
 
 [deps]
 
-source_file="res://assets/wizard_back_attack.svg"
+source_file="res://assets/frost_mage_back_attack.svg"
 dest_files=["res://.godot/imported/wizard_back_attack.svg-b6fa972b3a07b0fe99caf0f6369c0a42.ctex"]
 
 [params]

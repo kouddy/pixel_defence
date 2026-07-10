@@ -22,7 +22,7 @@ const GREENFIELD := {
 	# Towers introduced by this level. The full buildable arsenal on a level is
 	# the union of `unlocked_units` across this level and all earlier ones —
 	# see GameManager.available_unit_ids(). The base 4 towers all unlock here.
-	&"unlocked_units": [&"soldier", &"archer", &"knight", &"wizard"],
+	&"unlocked_units": [&"soldier", &"archer", &"knight"],
 	&"path_tiles": [
 		Vector2i(-2, 2),
 		Vector2i(6, 2),
