@@ -88,92 +88,92 @@ const STANCE_ATTACK  := true
 # Paths use load() (cached by Godot). The project imports SVGs at scale 1.0 and
 # nearest-neighbour by default; for this art we override the texture to LINEAR
 # filtering at load time so the detailed shading downscales cleanly.
-const SOLDIER_TEX_FRONT_IDLE    := preload("res://assets/soldier_front_non_attack.svg")
-const SOLDIER_TEX_FRONT_ATTACK  := preload("res://assets/soldier_front_attack.svg")
-const SOLDIER_TEX_BACK_IDLE     := preload("res://assets/soldier_back_non_attack.svg")
-const SOLDIER_TEX_BACK_ATTACK   := preload("res://assets/soldier_back_attack.svg")
-const SOLDIER_TEX_SIDE_IDLE     := preload("res://assets/soldier_left_non_attack.svg")
-const SOLDIER_TEX_SIDE_ATTACK   := preload("res://assets/soldier_left_attack.svg")
+const SOLDIER_TEX_FRONT_IDLE    := preload("res://assets/towers/soldier_front_non_attack.svg")
+const SOLDIER_TEX_FRONT_ATTACK  := preload("res://assets/towers/soldier_front_attack.svg")
+const SOLDIER_TEX_BACK_IDLE     := preload("res://assets/towers/soldier_back_non_attack.svg")
+const SOLDIER_TEX_BACK_ATTACK   := preload("res://assets/towers/soldier_back_attack.svg")
+const SOLDIER_TEX_SIDE_IDLE     := preload("res://assets/towers/soldier_left_non_attack.svg")
+const SOLDIER_TEX_SIDE_ATTACK   := preload("res://assets/towers/soldier_left_attack.svg")
 
-const ARCHER_TEX_FRONT_IDLE    := preload("res://assets/archer_front_non_attack.svg")
-const ARCHER_TEX_FRONT_ATTACK  := preload("res://assets/archer_front_attack.svg")
-const ARCHER_TEX_BACK_IDLE     := preload("res://assets/archer_back_non_attack.svg")
-const ARCHER_TEX_BACK_ATTACK   := preload("res://assets/archer_back_attack.svg")
-const ARCHER_TEX_SIDE_IDLE     := preload("res://assets/archer_left_non_attack.svg")
-const ARCHER_TEX_SIDE_ATTACK   := preload("res://assets/archer_left_attack.svg")
+const ARCHER_TEX_FRONT_IDLE    := preload("res://assets/towers/archer_front_non_attack.svg")
+const ARCHER_TEX_FRONT_ATTACK  := preload("res://assets/towers/archer_front_attack.svg")
+const ARCHER_TEX_BACK_IDLE     := preload("res://assets/towers/archer_back_non_attack.svg")
+const ARCHER_TEX_BACK_ATTACK   := preload("res://assets/towers/archer_back_attack.svg")
+const ARCHER_TEX_SIDE_IDLE     := preload("res://assets/towers/archer_left_non_attack.svg")
+const ARCHER_TEX_SIDE_ATTACK   := preload("res://assets/towers/archer_left_attack.svg")
 
-const KNIGHT_TEX_FRONT_IDLE_PATH    := "res://assets/knight_front_non_attack.svg"
-const KNIGHT_TEX_FRONT_ATTACK_PATH  := "res://assets/knight_front_attack.svg"
-const KNIGHT_TEX_BACK_IDLE_PATH     := "res://assets/knight_back_non_attack.svg"
-const KNIGHT_TEX_BACK_ATTACK_PATH   := "res://assets/knight_back_attack.svg"
-const KNIGHT_TEX_SIDE_IDLE_PATH     := "res://assets/knight_left_non_attack.svg"
-const KNIGHT_TEX_SIDE_ATTACK_PATH   := "res://assets/knight_left_attack.svg"
+const KNIGHT_TEX_FRONT_IDLE_PATH    := "res://assets/towers/knight_front_non_attack.svg"
+const KNIGHT_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/knight_front_attack.svg"
+const KNIGHT_TEX_BACK_IDLE_PATH     := "res://assets/towers/knight_back_non_attack.svg"
+const KNIGHT_TEX_BACK_ATTACK_PATH   := "res://assets/towers/knight_back_attack.svg"
+const KNIGHT_TEX_SIDE_IDLE_PATH     := "res://assets/towers/knight_left_non_attack.svg"
+const KNIGHT_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/knight_left_attack.svg"
 
-const WIZARD_TEX_FRONT_IDLE_PATH    := "res://assets/wizard_front_non_attack.svg"
-const WIZARD_TEX_FRONT_ATTACK_PATH  := "res://assets/wizard_front_attack.svg"
-const WIZARD_TEX_BACK_IDLE_PATH     := "res://assets/wizard_back_non_attack.svg"
-const WIZARD_TEX_BACK_ATTACK_PATH   := "res://assets/wizard_back_attack.svg"
-const WIZARD_TEX_SIDE_IDLE_PATH     := "res://assets/wizard_left_non_attack.svg"
-const WIZARD_TEX_SIDE_ATTACK_PATH   := "res://assets/wizard_left_attack.svg"
+const WIZARD_TEX_FRONT_IDLE_PATH    := "res://assets/towers/wizard_front_non_attack.svg"
+const WIZARD_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/wizard_front_attack.svg"
+const WIZARD_TEX_BACK_IDLE_PATH     := "res://assets/towers/wizard_back_non_attack.svg"
+const WIZARD_TEX_BACK_ATTACK_PATH   := "res://assets/towers/wizard_back_attack.svg"
+const WIZARD_TEX_SIDE_IDLE_PATH     := "res://assets/towers/wizard_left_non_attack.svg"
+const WIZARD_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/wizard_left_attack.svg"
 
-const FROST_MAGE_TEX_FRONT_IDLE_PATH    := "res://assets/frost_mage_front_non_attack.svg"
-const FROST_MAGE_TEX_FRONT_ATTACK_PATH  := "res://assets/frost_mage_front_attack.svg"
-const FROST_MAGE_TEX_BACK_IDLE_PATH     := "res://assets/frost_mage_back_non_attack.svg"
-const FROST_MAGE_TEX_BACK_ATTACK_PATH   := "res://assets/frost_mage_back_attack.svg"
-const FROST_MAGE_TEX_SIDE_IDLE_PATH     := "res://assets/frost_mage_left_non_attack.svg"
-const FROST_MAGE_TEX_SIDE_ATTACK_PATH   := "res://assets/frost_mage_left_attack.svg"
+const FROST_MAGE_TEX_FRONT_IDLE_PATH    := "res://assets/towers/frost_mage_front_non_attack.svg"
+const FROST_MAGE_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/frost_mage_front_attack.svg"
+const FROST_MAGE_TEX_BACK_IDLE_PATH     := "res://assets/towers/frost_mage_back_non_attack.svg"
+const FROST_MAGE_TEX_BACK_ATTACK_PATH   := "res://assets/towers/frost_mage_back_attack.svg"
+const FROST_MAGE_TEX_SIDE_IDLE_PATH     := "res://assets/towers/frost_mage_left_non_attack.svg"
+const FROST_MAGE_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/frost_mage_left_attack.svg"
 
 # --- Crossbowman (detailed art shipped as bowman_*.svg) ---
 # The bow-themed SVG files are named "bowman_*"; they back the existing
 # "crossbowman" unit, upgrading it from ASCII to texture art.
-const CROSSBOWMAN_TEX_FRONT_IDLE_PATH    := "res://assets/bowman_front_non_attack.svg"
-const CROSSBOWMAN_TEX_FRONT_ATTACK_PATH  := "res://assets/bowman_front_attack.svg"
-const CROSSBOWMAN_TEX_BACK_IDLE_PATH     := "res://assets/bowman_back_non_attack.svg"
-const CROSSBOWMAN_TEX_BACK_ATTACK_PATH   := "res://assets/bowman_back_attack.svg"
-const CROSSBOWMAN_TEX_SIDE_IDLE_PATH     := "res://assets/bowman_left_non_attack.svg"
-const CROSSBOWMAN_TEX_SIDE_ATTACK_PATH   := "res://assets/bowman_left_attack.svg"
+const CROSSBOWMAN_TEX_FRONT_IDLE_PATH    := "res://assets/towers/bowman_front_non_attack.svg"
+const CROSSBOWMAN_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/bowman_front_attack.svg"
+const CROSSBOWMAN_TEX_BACK_IDLE_PATH     := "res://assets/towers/bowman_back_non_attack.svg"
+const CROSSBOWMAN_TEX_BACK_ATTACK_PATH   := "res://assets/towers/bowman_back_attack.svg"
+const CROSSBOWMAN_TEX_SIDE_IDLE_PATH     := "res://assets/towers/bowman_left_non_attack.svg"
+const CROSSBOWMAN_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/bowman_left_attack.svg"
 
 # --- Cleric ---
-const CLERIC_TEX_FRONT_IDLE_PATH    := "res://assets/cleric_front_non_attack.svg"
-const CLERIC_TEX_FRONT_ATTACK_PATH  := "res://assets/cleric_front_attack.svg"
-const CLERIC_TEX_BACK_IDLE_PATH     := "res://assets/cleric_back_non_attack.svg"
-const CLERIC_TEX_BACK_ATTACK_PATH   := "res://assets/cleric_back_attack.svg"
-const CLERIC_TEX_SIDE_IDLE_PATH     := "res://assets/cleric_left_non_attack.svg"
-const CLERIC_TEX_SIDE_ATTACK_PATH   := "res://assets/cleric_left_attack.svg"
+const CLERIC_TEX_FRONT_IDLE_PATH    := "res://assets/towers/cleric_front_non_attack.svg"
+const CLERIC_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/cleric_front_attack.svg"
+const CLERIC_TEX_BACK_IDLE_PATH     := "res://assets/towers/cleric_back_non_attack.svg"
+const CLERIC_TEX_BACK_ATTACK_PATH   := "res://assets/towers/cleric_back_attack.svg"
+const CLERIC_TEX_SIDE_IDLE_PATH     := "res://assets/towers/cleric_left_non_attack.svg"
+const CLERIC_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/cleric_left_attack.svg"
 
 # --- Bard ---
-const BARD_TEX_FRONT_IDLE_PATH    := "res://assets/bard_front_non_attack.svg"
-const BARD_TEX_FRONT_ATTACK_PATH  := "res://assets/bard_front_attack.svg"
-const BARD_TEX_BACK_IDLE_PATH     := "res://assets/bard_back_non_attack.svg"
-const BARD_TEX_BACK_ATTACK_PATH   := "res://assets/bard_back_attack.svg"
-const BARD_TEX_SIDE_IDLE_PATH     := "res://assets/bard_left_non_attack.svg"
-const BARD_TEX_SIDE_ATTACK_PATH   := "res://assets/bard_left_attack.svg"
+const BARD_TEX_FRONT_IDLE_PATH    := "res://assets/towers/bard_front_non_attack.svg"
+const BARD_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/bard_front_attack.svg"
+const BARD_TEX_BACK_IDLE_PATH     := "res://assets/towers/bard_back_non_attack.svg"
+const BARD_TEX_BACK_ATTACK_PATH   := "res://assets/towers/bard_back_attack.svg"
+const BARD_TEX_SIDE_IDLE_PATH     := "res://assets/towers/bard_left_non_attack.svg"
+const BARD_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/bard_left_attack.svg"
 
 # --- Catapult (no back_attack art yet; BACK+attack falls back to BACK idle) ---
-const CATAPULT_TEX_FRONT_IDLE_PATH    := "res://assets/catapult_front_non_attack.svg"
-const CATAPULT_TEX_FRONT_ATTACK_PATH  := "res://assets/catapult_front_attack.svg"
-const CATAPULT_TEX_BACK_IDLE_PATH     := "res://assets/catapult_back_non_attack.svg"
-const CATAPULT_TEX_SIDE_IDLE_PATH     := "res://assets/catapult_left_non_attack.svg"
-const CATAPULT_TEX_SIDE_ATTACK_PATH   := "res://assets/catapult_left_attack.svg"
+const CATAPULT_TEX_FRONT_IDLE_PATH    := "res://assets/towers/catapult_front_non_attack.svg"
+const CATAPULT_TEX_FRONT_ATTACK_PATH  := "res://assets/towers/catapult_front_attack.svg"
+const CATAPULT_TEX_BACK_IDLE_PATH     := "res://assets/towers/catapult_back_non_attack.svg"
+const CATAPULT_TEX_SIDE_IDLE_PATH     := "res://assets/towers/catapult_left_non_attack.svg"
+const CATAPULT_TEX_SIDE_ATTACK_PATH   := "res://assets/towers/catapult_left_attack.svg"
 
 # --- Prince (mobile dual-weapon unit) ---
 # Prince art has a WEAPON axis the other units don't: each facing/stance exists
 # in both a bow and a sword variant (prince_<dir>_<bow|sword>_<state>.svg). The
 # resolver below takes a `weapon` argument to pick the set. Side art faces LEFT,
 # same convention as the other units (RIGHT is flipped by the caller).
-const PRINCE_TEX_BOW_FRONT_IDLE_PATH    := "res://assets/prince_front_bow_non_attack.svg"
-const PRINCE_TEX_BOW_FRONT_ATTACK_PATH  := "res://assets/prince_front_bow_attack.svg"
-const PRINCE_TEX_BOW_BACK_IDLE_PATH     := "res://assets/prince_back_bow_non_attack.svg"
-const PRINCE_TEX_BOW_BACK_ATTACK_PATH   := "res://assets/prince_back_bow_attack.svg"
-const PRINCE_TEX_BOW_SIDE_IDLE_PATH     := "res://assets/prince_left_bow_non_attack.svg"
-const PRINCE_TEX_BOW_SIDE_ATTACK_PATH   := "res://assets/prince_left_bow_attack.svg"
+const PRINCE_TEX_BOW_FRONT_IDLE_PATH    := "res://assets/towers/prince_front_bow_non_attack.svg"
+const PRINCE_TEX_BOW_FRONT_ATTACK_PATH  := "res://assets/towers/prince_front_bow_attack.svg"
+const PRINCE_TEX_BOW_BACK_IDLE_PATH     := "res://assets/towers/prince_back_bow_non_attack.svg"
+const PRINCE_TEX_BOW_BACK_ATTACK_PATH   := "res://assets/towers/prince_back_bow_attack.svg"
+const PRINCE_TEX_BOW_SIDE_IDLE_PATH     := "res://assets/towers/prince_left_bow_non_attack.svg"
+const PRINCE_TEX_BOW_SIDE_ATTACK_PATH   := "res://assets/towers/prince_left_bow_attack.svg"
 
-const PRINCE_TEX_SWORD_FRONT_IDLE_PATH    := "res://assets/prince_front_sword_non_attack.svg"
-const PRINCE_TEX_SWORD_FRONT_ATTACK_PATH  := "res://assets/prince_front_sword_attack.svg"
-const PRINCE_TEX_SWORD_BACK_IDLE_PATH     := "res://assets/prince_back_sword_non_attack.svg"
-const PRINCE_TEX_SWORD_BACK_ATTACK_PATH   := "res://assets/prince_back_sword_attack.svg"
-const PRINCE_TEX_SWORD_SIDE_IDLE_PATH     := "res://assets/prince_left_sword_non_attack.svg"
-const PRINCE_TEX_SWORD_SIDE_ATTACK_PATH   := "res://assets/prince_left_sword_attack.svg"
+const PRINCE_TEX_SWORD_FRONT_IDLE_PATH    := "res://assets/towers/prince_front_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_FRONT_ATTACK_PATH  := "res://assets/towers/prince_front_sword_attack.svg"
+const PRINCE_TEX_SWORD_BACK_IDLE_PATH     := "res://assets/towers/prince_back_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_BACK_ATTACK_PATH   := "res://assets/towers/prince_back_sword_attack.svg"
+const PRINCE_TEX_SWORD_SIDE_IDLE_PATH     := "res://assets/towers/prince_left_sword_non_attack.svg"
+const PRINCE_TEX_SWORD_SIDE_ATTACK_PATH   := "res://assets/towers/prince_left_sword_attack.svg"
 
 # Weapon names used as keys into the prince path set below.
 const WEAPON_BOW := "bow"
