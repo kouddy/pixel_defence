@@ -609,10 +609,10 @@ const SANDSTORM_VAULTS := {
 	&"start_gold": 340,
 	&"start_lives": 18,
 	&"map_seed": 8181.0,
-	# Unlocks the Paladin (introduces Mummies in its waves).
-	&"unlocked_units": [&"paladin"],
+	# Unlocks the Bard (introduces Mummies in its waves).
+	&"unlocked_units": [&"bard"],
 	# Long diagonal-feeling march: a wide U that exposes enemies on both the top
-	# and bottom edges — the Paladin's deep slow shines on the long straight runs.
+	# and bottom edges — the Bard's wide, lingering slow shines on the long runs.
 	&"path_tiles": [
 		Vector2i(-2, 2),
 		Vector2i(13, 2),
@@ -693,10 +693,11 @@ const WAR_CAMP := {
 	&"start_gold": 360,
 	&"start_lives": 17,
 	&"map_seed": 9292.0,
-	# Unlocks the Bard (introduces Orcs in its waves).
-	&"unlocked_units": [&"bard"],
-	# Siege approach: a long top run feeding a staggered descent — the Bard's
-	# wide slow paints the long lane and clusters the orcs at the corners.
+	# No new tower this level — introduces Orcs (heavy armor). The roster earned
+	# so far (Soldier..Bard) is enough to hold the siege lines.
+	&"unlocked_units": [],
+	# Siege approach: a long top run feeding a staggered descent — slows paint
+	# the long lane and cluster the orcs at the corners.
 	&"path_tiles": [
 		Vector2i(-2, 4),
 		Vector2i(16, 4),
@@ -776,10 +777,10 @@ const WITCHWOOD := {
 	&"start_gold": 380,
 	&"start_lives": 16,
 	&"map_seed": 3434.0,
-	# Unlocks the Alchemist (introduces Witches in its waves).
-	&"unlocked_units": [&"alchemist"],
-	# Winding forest path: many short segments and corners — the Alchemist's
-	# lobbed flasks arc over the front line to hit clustered witches.
+	# Unlocks the Prince (introduces Witches in its waves).
+	&"unlocked_units": [&"prince"],
+	# Winding forest path: many short segments and corners — the Prince's
+	# mobility chases witches between the trees, and his bow hits air.
 	&"path_tiles": [
 		Vector2i(-2, 2),
 		Vector2i(5, 2),
@@ -859,10 +860,11 @@ const STONE_KEEP := {
 	&"start_gold": 400,
 	&"start_lives": 16,
 	&"map_seed": 5656.0,
-	# Unlocks the Prince (introduces Gargoyles in its waves).
-	&"unlocked_units": [&"prince"],
+	# No new tower this level — introduces Gargoyles (heavy flyers). The Prince
+	# (unlocked last level) and existing anti-air cover the battlements.
+	&"unlocked_units": [],
 	# Keep circuit: a wide loop around a central block — long sightlines suit
-	# the Prince's accurate single shots against the heavy flying gargoyles.
+	# accurate single shots against the heavy flying gargoyles.
 	&"path_tiles": [
 		Vector2i(-2, 3),
 		Vector2i(8, 3),

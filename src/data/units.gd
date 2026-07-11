@@ -148,24 +148,7 @@ const Cleric := {
 	&"slow_duration": 1.2,
 }
 
-# Paladin: heavy frontline smite. Tanky melee with a deep slow; the answer to
-# heavy ground pressure that would overrun a Knight.
-const Paladin := {
-	&"id": &"paladin",
-	&"display_name": "Paladin",
-	&"description": "Holy frontline. Heavy blows, deep slow.",
-	&"color": Color(0.95, 0.88, 0.45),
-	&"radius": 24,
-	&"attack_type": UnitData.AttackType.MELEE,
-	&"cost": 170,
-	&"damage": 26.0,
-	&"range_px": 90.0,
-	&"fire_rate": 0.8,
-	&"can_hit_air": false,
-	&"slows_on_hit": true,
-	&"slow_factor": 0.45,
-	&"slow_duration": 1.5,
-}
+# Paladin was a heavy holy melee unit; removed from the game.
 
 # Bard: crowd-controller. Wide splash with a long, gentle slow — paints a whole
 # lane with drag. Very fast fire rate keeps the effect up; damage is low.
@@ -188,23 +171,7 @@ const Bard := {
 	&"slow_duration": 2.0,
 }
 
-# Alchemist: ranged splash hurler. Lobbed flasks arc over the front line and hit
-# air; trades raw damage and splash radius for range + versatility.
-const Alchemist := {
-	&"id": &"alchemist",
-	&"display_name": "Alchemist",
-	&"description": "Lobbed flasks. Splash over the front, hits air.",
-	&"color": Color(0.55, 0.85, 0.45),
-	&"radius": 20,
-	&"attack_type": UnitData.AttackType.SPLASH,
-	&"cost": 160,
-	&"damage": 18.0,
-	&"range_px": 130.0,
-	&"fire_rate": 1.0,
-	&"splash_radius": 42.0,
-	&"projectile_speed": 300.0,
-	&"can_hit_air": true,
-}
+# Alchemist was a lobbed-splash unit; removed from the game.
 
 # Prince: a MOBILE royal. Unlike every other tower, the prince moves: it charges
 # toward enemies, firing its bow at range and switching to its sword (melee)
@@ -228,12 +195,14 @@ const Prince := {
 	&"melee_damage": 34.0,     # sword damage (melee), hits harder than the bow
 }
 
-# Princess: royal enchanter. Long-range bolts that slow on hit, striking air —
-# covers the backfield and pins fast/flying threats for the rest of the line.
+# Princess: royal enchanter + force multiplier. She still looses her own
+# enchanted bolts (long range, slow on hit), AND radiates an aura that buffs
+# every nearby tower's damage and fire rate. Like the prince, only 3 may be on
+# the map at once.
 const Princess := {
 	&"id": &"princess",
 	&"display_name": "Princess",
-	&"description": "Enchanted bolts. Long range, slows on hit.",
+	&"description": "Enchanted bolts + an aura that inspires nearby towers.",
 	&"color": Color(0.92, 0.50, 0.78),
 	&"radius": 20,
 	&"attack_type": UnitData.AttackType.PROJECTILE,
@@ -246,10 +215,13 @@ const Princess := {
 	&"slows_on_hit": true,
 	&"slow_factor": 0.55,
 	&"slow_duration": 1.0,
+	&"aura_radius": 130.0,        # ~5 tiles; buffs towers inside this
+	&"aura_damage_mult": 1.15,    # +15% damage to aura'd towers
+	&"aura_fire_rate_mult": 1.15, # +15% fire rate to aura'd towers
 }
 
 const ALL := [Soldier, Archer, Knight, Wizard, Crossbowman, FrostMage, Catapult,
-	Cleric, Paladin, Bard, Alchemist, Prince, Princess]
+	Cleric, Bard, Prince, Princess]
 
 
 static func make(key: Dictionary) -> UnitData:

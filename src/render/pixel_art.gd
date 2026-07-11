@@ -882,26 +882,6 @@ const CLERIC := [
 	"..KKKK..KKKK....",
 ]
 
-# Paladin — gold-trim plate armor + warhammer. Heavy holy frontline.
-const PALADIN := [
-	"................",
-	"......y.........",   # plume
-	"......y.........",
-	"....KKiiiiKK....",   # helm
-	"...KiiiiiiiiK...",
-	"...KiIIIIIIiK...",   # visor
-	"...KiAiiAiAik...",   # eyes
-	"...KiiiiiiiiK...",
-	"....KSSSSSSK....",   # chin
-	"...AAyyyyyAA.Z..",   # shoulders + hammer head
-	"..AyyyyyyyyyAZ..",   # gold chest plate + shaft
-	"..AyyyyyyyyyAZ..",
-	"..AyyyyyyyyyA...",
-	"...KAyyyyyAK....",   # belt
-	"....Kmm..mmK....",   # legs
-	"...KKKK..KKKK...",
-]
-
 # Bard — purple hood + lute. Wide-slow crowd control.
 const BARD := [
 	"................",
@@ -920,26 +900,6 @@ const BARD := [
 	"...KmmmmK..uuu..",
 	"...Km..mK.......",
 	"..KKK..KKK......",
-]
-
-# Alchemist — green hood, lobbed flasks. Ranged splash over the front line.
-const ALCHEMIST := [
-	"................",
-	"......q.........",   # hood tip
-	".....gqg........",
-	"....ggqgg.......",
-	"...ggGgGgg......",   # hood
-	"..ggGsssGg......",
-	"..gGsKsKsGg..q..",   # eyes + flask
-	"..gGsssssg..q...",
-	"...gGSSSSg..g...",   # face + flask neck
-	"...GGmmGG...y...",   # apron + flask body
-	"..MmmGGmmM..g...",
-	"..MmmmmmmM..y...",
-	"...KmmmmK...g...",
-	"...Km..mK.......",
-	"..KKK..KKK......",
-	"................",
 ]
 
 # Prince — blue royal + crossbow. Fast accurate single shots, hits air.
@@ -1234,9 +1194,7 @@ static func for_unit(unit_id: String) -> PackedStringArray:
 		&"frost_mage":  return FROST_MAGE
 		&"catapult":    return CATAPULT
 		&"cleric":      return CLERIC
-		&"paladin":     return PALADIN
 		&"bard":        return BARD
-		&"alchemist":   return ALCHEMIST
 		&"prince":      return PRINCE
 		&"princess":    return PRINCESS
 	return SOLDIER

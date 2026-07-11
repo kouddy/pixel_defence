@@ -46,6 +46,14 @@ var total_waves: int = 0
 
 var game_over: bool = false
 
+# Per-unit-type count of towers currently on the map (StringName id -> int).
+# Used to enforce the royal cap (prince/princess). Cleared in reset_run().
+var tower_counts: Dictionary = {}
+
+# Royal units (prince, princess) are limited to this many on the map at once.
+const ROYAL_CAP := 3
+const ROYAL_IDS := [&"prince", &"princess"]
+
 const MAIN_SCENE := "res://src/main.tscn"
 const MENU_SCENE := "res://src/ui/main_menu.tscn"
 
@@ -59,6 +67,31 @@ func reset_run() -> void:
 	lives = start_lives
 	current_wave = 0
 	game_over = false
+	tower_counts.clear()
+
+
+## Count a newly-placed tower toward its unit-type total.
+func register_tower(id: StringName) -> void:
+	tower_counts[id] = int(tower_counts.get(id, 0)) + 1
+
+
+## Decrement the count when a tower is sold. No-op below zero.
+func unregister_tower(id: StringName) -> void:
+	var n := int(tower_counts.get(id, 0)) - 1
+	tower_counts[id] = maxi(0, n)
+
+
+## True if placing another `id` would exceed its cap. Only royal units (prince,
+## princess) are capped; every other unit is unlimited.
+func tower_cap_reached(id: StringName) -> bool:
+	if not ROYAL_IDS.has(id):
+		return false
+	return int(tower_counts.get(id, 0)) >= ROYAL_CAP
+
+
+## How many of `id` are currently on the map.
+func tower_count(id: StringName) -> int:
+	return int(tower_counts.get(id, 0))
 
 
 ## Towers the player may build on the currently-selected level.

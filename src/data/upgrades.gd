@@ -66,23 +66,11 @@ const TIERS := {
 		{ &"cost": 180, &"damage": 1.8, &"range": 1.20, &"fire_rate": 1.30, &"splash": 1.40,
 		  &"note": "High priest: holy light lays the wicked low." },
 	],
-	&"paladin": [
-		{ &"cost": 110, &"damage": 1.7, &"range": 1.15, &"fire_rate": 1.25, &"splash": 1.0,
-		  &"note": "Blessed plate: heavier blows, deeper slow." },
-		{ &"cost": 220, &"damage": 1.9, &"range": 1.20, &"fire_rate": 1.30, &"splash": 1.0,
-		  &"note": "Templar: the hammer of dawn, unstoppable." },
-	],
 	&"bard": [
 		{ &"cost": 80,  &"damage": 1.6, &"range": 1.15, &"fire_rate": 1.30, &"splash": 1.25,
 		  &"note": "Louder chorus: wider waves, lingering drag." },
 		{ &"cost": 160, &"damage": 1.7, &"range": 1.20, &"fire_rate": 1.40, &"splash": 1.35,
 		  &"note": "Virtuoso: a symphony that stops armies cold." },
-	],
-	&"alchemist": [
-		{ &"cost": 100, &"damage": 1.7, &"range": 1.20, &"fire_rate": 1.20, &"splash": 1.30,
-		  &"note": "Stronger reagents: bigger blasts, longer lob." },
-		{ &"cost": 200, &"damage": 1.9, &"range": 1.25, &"fire_rate": 1.30, &"splash": 1.40,
-		  &"note": "Master chemist: volatile mixtures, devastating yield." },
 	],
 	&"prince": [
 		{ &"cost": 130, &"damage": 1.7, &"range": 1.20, &"fire_rate": 1.30, &"splash": 1.0,

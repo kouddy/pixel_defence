@@ -51,6 +51,13 @@ var _base: UnitData = null               # snapshot of base stats at placement
 # Idle sway phase (random per-tower so a row of towers doesn't move in sync).
 var _sway_phase: float = 0.0
 
+# Aura buff applied TO this tower by a nearby princess. Separate from the
+# upgrade path because _recompute_stats() rebuilds `data` from _base on every
+# upgrade, which would wipe any buff written directly into data. These
+# multipliers are re-applied on top of the freshly-recomputed stats.
+var _aura_dmg_mult: float = 1.0
+var _aura_rate_mult: float = 1.0
+
 @onready var sprite: Node2D = $Sprite
 @onready var range_visual: ColorRect = $RangeVisual
 
@@ -146,10 +153,9 @@ func next_tier_note() -> String:
 	return tiers[level][&"note"]
 
 
-## Recompute current stats from base + all applied tiers.
-func _recompute_stats() -> void:
-	if _base == null:
-		return
+## Build a fresh UnitData from base stats + cumulative upgrade tiers. Shared by
+## _recompute_stats() and _apply_aura() so the upgrade math lives in one place.
+func _compute_base_tier_stats() -> UnitData:
 	var d := _base.duplicate()
 	var dmg_mult := 1.0
 	var range_mult := 1.0
@@ -169,7 +175,57 @@ func _recompute_stats() -> void:
 	# The prince's sword shares the damage upgrade path with its bow so upgrades
 	# improve both weapons together.
 	d.melee_damage = _base.melee_damage * dmg_mult
+	return d
+
+
+## Recompute current stats from base + all applied tiers, then re-apply any aura.
+func _recompute_stats() -> void:
+	if _base == null:
+		return
+	data = _compute_base_tier_stats()
+	_apply_aura()
+	_apply_data()
+
+
+## Re-apply the aura multipliers on top of the base+tier stats. Called after
+## _recompute_stats and whenever set_aura changes the buff. No-op at (1.0, 1.0).
+func _apply_aura() -> void:
+	if _base == null:
+		return
+	# Rebuild from base+tiers so aura never compounds on itself across calls.
+	var d := _compute_base_tier_stats()
+	if _aura_dmg_mult != 1.0:
+		d.damage *= _aura_dmg_mult
+		d.melee_damage *= _aura_dmg_mult
+	if _aura_rate_mult != 1.0:
+		d.fire_rate *= _aura_rate_mult
 	data = d
+
+
+## Clear any aura buff on this tower (no princess covers it this frame). Unlike
+## set_aura this is unconditional — the aura driver calls it for every tower at
+## the start of each frame before reapplying, so a lapsed buff is always removed.
+func clear_aura() -> void:
+	if is_equal_approx(_aura_dmg_mult, 1.0) and is_equal_approx(_aura_rate_mult, 1.0):
+		return
+	_aura_dmg_mult = 1.0
+	_aura_rate_mult = 1.0
+	_apply_aura()
+	_apply_data()
+
+
+## Offer an aura buff to this tower. Auras do NOT stack: this keeps the strongest
+## buff per stat (component-wise max) across all princesses covering the tower.
+## Because the driver calls clear_aura() first each frame, this only ever raises
+## or holds the multiplier — never lowers — so overlaps never compound.
+func set_aura(dmg_mult: float, rate_mult: float) -> void:
+	var dmg := maxf(_aura_dmg_mult, dmg_mult)
+	var rate := maxf(_aura_rate_mult, rate_mult)
+	if is_equal_approx(dmg, _aura_dmg_mult) and is_equal_approx(rate, _aura_rate_mult):
+		return
+	_aura_dmg_mult = dmg
+	_aura_rate_mult = rate
+	_apply_aura()
 	_apply_data()
 
 

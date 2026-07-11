@@ -29,3 +29,11 @@ enum AttackType { MELEE, PROJECTILE, SPLASH }
 @export var move_speed: float = 0.0
 @export var melee_range_px: float = 0.0
 @export var melee_damage: float = 0.0
+
+# Aura fields. Only the princess sets these. `aura_radius` > 0 marks the tower
+# as an aura source: each frame it grants `aura_damage_mult`/`aura_fire_rate_mult`
+# to every OTHER tower within radius (no stacking — a tower keeps only the
+# strongest aura covering it). Zero defaults keep every other tower inert.
+@export var aura_radius: float = 0.0
+@export var aura_damage_mult: float = 0.0
+@export var aura_fire_rate_mult: float = 0.0

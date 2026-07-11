@@ -49,10 +49,38 @@ func _on_speed_changed(mult: float) -> void:
 
 
 func _process(_dt: float) -> void:
+	var towers := towers_node.get_children()
 	# Refresh tower target lists each frame.
 	_enemies = get_tree().get_nodes_in_group("enemies")
-	for t in towers_node.get_children():
+	for t in towers:
 		t.set_enemies(_enemies)
+	_apply_auras(towers)
+
+
+## Recompute the princess aura buffs each frame. Auras don't stack: every tower
+## starts the frame unbuffed, then each princess offers its buff to the towers
+## inside its radius, with strongest-wins resolved inside Tower.set_aura. Cheap
+## (O(princesses × towers); counts are small) and matches the per-frame enemy
+## loop above. A princess does not buff herself.
+func _apply_auras(towers: Array) -> void:
+	for t in towers:
+		(t as Node2D).clear_aura()
+	for src in towers:
+		var src_t: Node2D = src
+		# aura_radius > 0 marks an aura source (only the princess). Duck-typed:
+		# every child of Towers is a Tower node, but this file annotates Node2D
+		# to match the rest of main.gd and avoid depending on class registration.
+		if src_t.data.aura_radius <= 0.0:
+			continue
+		var r: float = src_t.data.aura_radius
+		var dmg: float = src_t.data.aura_damage_mult
+		var rate: float = src_t.data.aura_fire_rate_mult
+		for t in towers:
+			var tower: Node2D = t
+			if tower == src_t:
+				continue
+			if src_t.global_position.distance_to(tower.global_position) <= r:
+				tower.set_aura(dmg, rate)
 
 
 func _resize_hud_to_viewport() -> void:
@@ -80,7 +108,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					_on_start_wave()
 	if event is InputEventMouseMotion:
 		if _build_data != null:
-			var ok: bool = world.can_build_at(event.position) and GameManager.can_afford(_build_data.cost)
+			var ok: bool = _can_place_here(event.position)
 			world.show_build_hint(event.position, ok)
 		_update_tower_hover(event.position)
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -168,17 +196,33 @@ func _on_sell_requested() -> void:
 	else:
 		world.occupied.erase(world.world_to_tile(_selected_tower.global_position))
 	var sold := _selected_tower
+	var sold_id: StringName = sold.data.id
 	_deselect_tower()
+	GameManager.unregister_tower(sold_id)
 	sold.queue_free()
 
 
-func _try_place(pos: Vector2) -> void:
+## Unified placement predicate shared by the hover hint and _try_place. Checks
+## tile buildability, affordability, and the royal cap (prince/princess max 3).
+func _can_place_here(pos: Vector2) -> bool:
+	if _build_data == null:
+		return false
 	if not world.can_build_at(pos):
-		SFX.build_deny()
-		return
+		return false
 	if not GameManager.can_afford(_build_data.cost):
+		return false
+	if GameManager.tower_cap_reached(_build_data.id):
+		return false
+	return true
+
+
+func _try_place(pos: Vector2) -> void:
+	if not _can_place_here(pos):
 		SFX.build_deny()
-		_cancel_build()
+		# If the block is just affordability, drop build mode (player is out of
+		# gold for this unit). Cap/tile rejections keep build mode active.
+		if not GameManager.can_afford(_build_data.cost):
+			_cancel_build()
 		return
 	GameManager.spend(_build_data.cost)
 	var tower := TOWER_SCENE.instantiate()
@@ -189,6 +233,8 @@ func _try_place(pos: Vector2) -> void:
 	# even for the mobile prince, which may have roamed onto another tile.
 	tower.home_tile = world.world_to_tile(pos)
 	world.occupy(pos)
+	# Count the new tower toward its unit-type total (enforces the royal cap).
+	GameManager.register_tower(_build_data.id)
 	# Placement pop: flash + ring so building feels responsive, not silent.
 	FX.flash_at(tower.global_position, _build_data.color, 18.0)
 	FX.ring(tower.global_position, _build_data.color, 34.0)
